@@ -30,14 +30,14 @@
     <!-- Controles Superiores da Câmera -->
     <div class="flex justify-between items-center px-6 py-2 relative z-50">
 
-        <img src="./images/botao_flash.png" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;"
+        <img id="btn-flash" src="./images/botao_flash.png" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;"
             alt="icone de flash">
 
         <!-- WRAPPER DO BOTÃO + MENU DA IA -->
         <div class="relative flex justify-center">
             <!-- Botão IA -->
             <img id="btn-ai" src="./images/botao_ia.png" class="cursor-pointer relative z-10"
-                style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="icone de IA">
+                style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="Bot de IA">
 
             <!-- Menu Flutuante ancorado no meio do botão -->
             <div id="ai-menu" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col w-[240px]">
@@ -113,8 +113,7 @@
                     <div class="flex items-center gap-3">
                         <i class="ph ph-circles-four text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque
-                                Autom.</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque Automático</span>
                             <span class="text-[10px] text-white/80 leading-tight">Desfocar</span>
                         </div>
                     </div>
@@ -132,7 +131,7 @@
                         <div class="flex flex-col">
                             <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros
                                 IA</span>
-                            <span class="text-[10px] text-white/80 leading-tight">Desligado</span>
+                            <span class="text-[10px] text-white/80 leading-tight">Aplicar Filtros Automáticos</span>
                         </div>
                     </div>
                     <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
@@ -217,16 +216,6 @@
 
         <!-- Área Rolável -->
         <div class="flex-grow overflow-y-auto pb-28 px-5 no-scrollbar">
-
-            <!-- Status Bar -->
-            <div class="flex justify-between items-center py-3 text-[13px] font-semibold tracking-wide">
-                <span>10:30</span>
-                <div class="flex gap-1.5 items-center">
-                    <i class="ph-fill ph-cell-signal-full text-base"></i>
-                    <i class="ph-bold ph-wifi-high text-base"></i>
-                    <i class="ph-fill ph-battery-full text-xl"></i>
-                </div>
-            </div>
 
             <!-- Cabeçalho -->
             <div class="flex justify-between items-center mt-2 mb-6">

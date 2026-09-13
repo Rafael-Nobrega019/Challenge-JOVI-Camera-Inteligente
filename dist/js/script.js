@@ -160,3 +160,4 @@ shutterBtn.addEventListener('click', () => {
     // "prepend" joga ela para o topo do grid da galeria
     galleryGrid.prepend(novaDiv);
 });
+
