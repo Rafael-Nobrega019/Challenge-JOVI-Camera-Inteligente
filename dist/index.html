@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <!-- Viewport ajustado para barrar o zoom e simular um app nativo -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Câmera JOVI</title>
+  
+  <link href="./css/styles.css" rel="stylesheet">
+  
+  <!-- Biblioteca de Ícones (Phosphor Icons) -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <!-- Estilo extra para esconder a barra de rolagem horizontal -->
+  <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+
+<body class="bg-black text-white h-[100dvh] w-screen overflow-hidden flex flex-col font-sans select-none">
+
+  <!-- Controles Superiores da Câmera -->
+  <div class="flex justify-between items-center px-6 py-2 relative z-50">
+      
+      <img src="./images/botao_flash.png" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="icone de flash">
+      
+      <!-- WRAPPER DO BOTÃO + MENU DA IA -->
+      <div class="relative flex justify-center">
+          <!-- Botão IA -->
+          <img id="btn-ai" src="./images/botao_ia.png" class="cursor-pointer relative z-10" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="icone de IA">
+          
+          <!-- Menu Flutuante ancorado no meio do botão -->
+          <div id="ai-menu" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col w-[240px]">
+              
+              <!-- Setinha amarela -->
+              <div class="flex justify-center -mb-1 z-10 relative">
+                  <div class="bg-black text-yellow-500 rounded-b-xl px-5 py-0.5 text-[10px] font-bold">V</div>
+              </div>
+
+              <!-- Item 1 (Transparente com bg-white/10) -->
+              <div class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
+                  <div class="flex items-center gap-3">
+                      <i class="ph ph-gear text-[22px] text-gray-900 drop-shadow-sm"></i>
+                      <div class="flex flex-col">
+                          <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Ajuste Automático</span>
+                          <span class="text-[10px] text-white/80 leading-tight">Automático</span>
+                      </div>
+                  </div>
+                  <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
+              </div>
+
+              <!-- Item 2 -->
+              <div class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
+                  <div class="flex items-center gap-3">
+                      <i class="ph-fill ph-moon text-[22px] text-gray-900 drop-shadow-sm"></i>
+                      <div class="flex flex-col">
+                          <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Cena Noturna</span>
+                          <span class="text-[10px] text-white/80 leading-tight">Pouca Luz</span>
+                      </div>
+                  </div>
+                  <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
+              </div>
+
+              <!-- Item 3 -->
+              <div class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
+                  <div class="flex items-center gap-3">
+                      <i class="ph ph-image text-[22px] text-gray-900 drop-shadow-sm"></i>
+                      <div class="flex flex-col">
+                          <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Resolução</span>
+                          <span class="text-[10px] text-white/80 leading-tight">200MP</span>
+                      </div>
+                  </div>
+                  <div class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
+                      <i class="ph-bold ph-check text-[10px]"></i>
+                  </div>
+              </div>
+
+              <!-- Item 4 -->
+              <div class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
+                  <div class="flex items-center gap-3">
+                      <i class="ph-fill ph-mountains text-[22px] text-gray-900 drop-shadow-sm"></i>
+                      <div class="flex flex-col">
+                          <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Nitidez</span>
+                          <span class="text-[10px] text-white/80 leading-tight">+65%</span>
+                      </div>
+                  </div>
+                  <div class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
+                      <i class="ph-bold ph-check text-[10px]"></i>
+                  </div>
+              </div>
+
+              <!-- Item 5 -->
+              <div class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
+                  <div class="flex items-center gap-3">
+                      <i class="ph ph-circles-four text-[22px] text-gray-900 drop-shadow-sm"></i>
+                      <div class="flex flex-col">
+                          <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque Autom.</span>
+                          <span class="text-[10px] text-white/80 leading-tight">Desfocar</span>
+                      </div>
+                  </div>
+                  <div class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
+                      <i class="ph-bold ph-check text-[10px]"></i>
+                  </div>
+              </div>
+
+              <!-- Item 6 -->
+              <div class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
+                  <div class="flex items-center gap-3">
+                      <i class="ph ph-funnel text-[22px] text-gray-900 drop-shadow-sm"></i>
+                      <div class="flex flex-col">
+                          <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros IA</span>
+                          <span class="text-[10px] text-white/80 leading-tight">Desligado</span>
+                      </div>
+                  </div>
+                  <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
+              </div>
+          </div>
+      </div>
+      <!-- Fim do Wrapper Botão+Menu -->
+
+      <div class="border border-white/50 px-3 py-0.5 rounded-full text-xs font-semibold tracking-wider">
+          4:5
+      </div>
+      
+      <img src="./images/botao_timer.png" style="width: 40px; height: 40px; object-fit: contain; flex-shrink: 0;" alt="icone de timer">
+      <img src="./images/botao_config.png" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="icone de configuração">
+  </div>
+
+  <!-- Viewfinder (Área do vídeo/foto) QUE HAVIA SIDO APAGADA -->
+  <div class="relative flex-grow bg-gray-900 mt-2 mx-1 rounded-sm overflow-hidden flex items-center justify-center">
+      
+      <!-- Elemento de Vídeo da WebCam -->
+      <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
+
+      <!-- Overlay: Modo Desfoque -->
+      <div class="absolute top-4 left-4 bg-white rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg z-10">
+          <i class="ph ph-circles-four text-black text-lg"></i>
+          <div class="flex flex-col">
+              <span class="text-[10px] leading-tight font-bold text-black">Modo Desfoque</span>
+              <span class="text-[9px] leading-tight text-gray-500">Ativado</span>
+          </div>
+      </div>
+
+      <!-- Overlay: Zoom 1x -->
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold shadow-md border border-white/10 z-10">
+          1x
+      </div>
+  </div>
+
+  <!-- Menu de Modos da Câmera -->
+  <div class="py-4 mt-2">
+      <ul class="flex overflow-x-auto no-scrollbar gap-6 px-1/2 justify-center text-[13px] items-center">
+          <li class="text-gray-400 whitespace-nowrap cursor-pointer">Noite</li>
+          <li class="text-gray-400 whitespace-nowrap cursor-pointer">Retrato</li>
+          <li class="bg-gray-800/80 text-pink-600 rounded-full px-5 py-1.5 font-semibold whitespace-nowrap cursor-pointer">Foto</li>
+          <li class="text-gray-400 whitespace-nowrap cursor-pointer">Video</li>
+          <li class="text-gray-400 whitespace-nowrap cursor-pointer">Microfilme</li>
+      </ul>
+  </div>
+
+  <!-- Controles Inferiores -->
+  <div class="flex justify-between items-center px-8 pb-6 pt-2">
+      <!-- Thumbnail (Galeria) -->
+      <div class="w-12 h-12 rounded-lg overflow-hidden border border-white/20 bg-gray-800 cursor-pointer active:scale-95 transition-transform">
+          <img src="./images/golden_beach.png" class="w-full h-full object-cover" alt="Galeria">
+      </div>
+
+      <!-- Botão Obturador -->
+      <div class="w-20 h-20 rounded-full border-[3px] border-white flex items-center justify-center p-1">
+          <button id="shutter" class="w-full h-full bg-white rounded-full active:scale-90 transition-transform cursor-pointer shadow-inner"></button>
+      </div>
+
+      <!-- Inverter Câmera -->
+      <button id="switch-camera" class="w-12 h-12 bg-[#1c1c1c] rounded-full flex items-center justify-center active:bg-gray-700 transition-colors cursor-pointer">
+          <i class="ph ph-arrows-clockwise text-2xl text-white"></i>
+      </button>
+  </div>
+
+  <!-- Barra inferior iOS -->
+  <div class="w-1/3 h-1 bg-white mx-auto rounded-full mb-2"></div>
+  
+  <script src="./js/script.js"></script>
+</body>
+</html>
