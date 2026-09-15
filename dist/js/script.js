@@ -162,9 +162,14 @@ let fotoAtualElemento = null;
 function abrirFotoEmTelaCheia(src, elemento) {
     modalImage.src = src;
     fotoAtualElemento = elemento || null;
+    
     const favoritada = !!fotoAtualElemento?.classList.contains('favorito');
-    btnFavoritarFoto.textContent = favoritada ? '❤' : '♡';
+    
+    // Removemos o textContent e usamos as classes ph e ph-fill do Phosphor
+    btnFavoritarFoto.classList.toggle('ph-fill', favoritada);
+    btnFavoritarFoto.classList.toggle('ph', !favoritada);
     btnFavoritarFoto.classList.toggle('text-pink-500', favoritada);
+    
     photoModal.classList.remove('hidden');
     photoModal.classList.add('flex');
 }
@@ -173,8 +178,12 @@ function abrirFotoEmTelaCheia(src, elemento) {
 const btnFavoritarFoto = document.getElementById('btn-favoritar-foto');
 btnFavoritarFoto.addEventListener('click', () => {
     if (!fotoAtualElemento) return;
+    
     const favoritada = fotoAtualElemento.classList.toggle('favorito');
-    btnFavoritarFoto.textContent = favoritada ? '❤' : '♡';
+    
+    // Alterna dinamicamente entre o ícone vazado e o preenchido
+    btnFavoritarFoto.classList.toggle('ph-fill', favoritada);
+    btnFavoritarFoto.classList.toggle('ph', !favoritada);
     btnFavoritarFoto.classList.toggle('text-pink-500', favoritada);
 });
 
