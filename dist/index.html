@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Câmera JOVI</title>
 
-    <link href="./css/styles.css" rel="stylesheet">
+    <link href="./css/styles.css?v=7" rel="stylesheet">
 
     <!-- Biblioteca de Ícones (Phosphor Icons) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -22,6 +22,24 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* Simula a IA melhorando luz e nitidez da foto/vídeo */
+        .ia-realce {
+            filter: brightness(1.12) contrast(1.12) saturate(1.15);
+            transition: filter .3s;
+        }
+
+        /* Trava o visualizador de foto pra sempre cobrir a tela inteira (evita abrir "no meio" do celular) */
+        #photo-modal {
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            margin: 0 !important;
+        }
     </style>
 </head>
 
@@ -30,14 +48,20 @@
     <!-- Controles Superiores da Câmera -->
     <div class="flex justify-between items-center px-6 py-2 relative z-50">
 
-        <img id="btn-flash" src="./images/botao_flash.png" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;"
-            alt="icone de flash">
+        <button id="btn-flash" type="button"
+            class="relative flex items-center justify-center cursor-pointer active:scale-90 transition-transform"
+            style="width: 30px; height: 30px; flex-shrink: 0;" title="Flash: Automático (pouca luz)"
+            aria-label="Alternar modo do flash">
+            <i id="flash-icon" class="ph-fill ph-lightning text-[22px] text-white transition-colors"></i>
+            <span id="flash-auto-badge"
+                class="absolute -bottom-1 -right-1 text-[8px] font-bold bg-white text-black rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none">A</span>
+        </button>
 
         <!-- WRAPPER DO BOTÃO + MENU DA IA -->
         <div class="relative flex justify-center">
             <!-- Botão IA -->
-            <img id="btn-ai" src="./images/botao_ia.png" class="cursor-pointer relative z-10"
-                style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="Bot de IA">
+            <img id="btn-ai" src="./images/botao_ia.png" class="cursor-pointer active:scale-90 transition-transform relative z-10"
+                style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="icone de IA">
 
             <!-- Menu Flutuante ancorado no meio do botão -->
             <div id="ai-menu" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col w-[240px]">
@@ -113,7 +137,8 @@
                     <div class="flex items-center gap-3">
                         <i class="ph ph-circles-four text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque Automático</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque
+                                Autom.</span>
                             <span class="text-[10px] text-white/80 leading-tight">Desfocar</span>
                         </div>
                     </div>
@@ -131,7 +156,7 @@
                         <div class="flex flex-col">
                             <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros
                                 IA</span>
-                            <span class="text-[10px] text-white/80 leading-tight">Aplicar Filtros Automáticos</span>
+                            <span class="text-[10px] text-white/80 leading-tight">Desligado</span>
                         </div>
                     </div>
                     <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
@@ -155,15 +180,6 @@
 
         <!-- Elemento de Vídeo da WebCam -->
         <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
-
-        <!-- Overlay: Modo Desfoque -->
-        <div class="absolute top-4 left-4 bg-white rounded-full px-3 py-1.5 flex items-center gap-2 shadow-lg z-10">
-            <i class="ph ph-circles-four text-black text-lg"></i>
-            <div class="flex flex-col">
-                <span class="text-[10px] leading-tight font-bold text-black">Modo Desfoque</span>
-                <span class="text-[9px] leading-tight text-gray-500">Ativado</span>
-            </div>
-        </div>
 
         <!-- Overlay: Zoom 1x -->
         <div
@@ -207,9 +223,6 @@
         </button>
     </div>
 
-    <!-- Barra inferior iOS -->
-    <div class="w-1/3 h-1 bg-white mx-auto rounded-full mb-2"></div>
-
     <!-- ================= INÍCIO DA GALERIA INTELIGENTE (OVERLAY) ================= -->
     <div id="gallery-view"
         class="fixed inset-0 bg-[#05030a] z-[100] hidden flex-col font-sans text-white h-[100dvh] w-screen overflow-hidden">
@@ -217,56 +230,107 @@
         <!-- Área Rolável -->
         <div class="flex-grow overflow-y-auto pb-28 px-5 no-scrollbar">
 
+
+
             <!-- Cabeçalho -->
             <div class="flex justify-between items-center mt-2 mb-6">
                 <div class="flex items-center gap-3">
-                    <i class="ph ph-list text-2xl cursor-pointer"></i>
+                    <div class="relative">
+                        <i id="menu-toggle" class="ph ph-list text-2xl cursor-pointer active:scale-90 transition-transform"></i>
+
+                        <!-- Menu lateral: para onde dá pra ir dentro da galeria -->
+                        <div id="menu-lateral"
+                            class="hidden absolute top-full mt-2 left-0 w-44 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
+                                data-alvo="btn-close-gallery">
+                                <i class="ph ph-camera"></i> Câmera
+                            </div>
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
+                                data-alvo="nav-buscar">
+                                <i class="ph ph-magnifying-glass"></i> Buscar
+                            </div>
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
+                                data-alvo="nav-sugestoes">
+                                <i class="ph-fill ph-sparkle"></i> Sugestões IA
+                            </div>
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
+                                data-alvo="nav-favoritos">
+                                <i class="ph ph-heart"></i> Favoritos
+                            </div>
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
+                                data-alvo="nav-albuns">
+                                <i class="ph ph-images"></i> Álbuns
+                            </div>
+                        </div>
+                    </div>
                     <h1 class="text-lg font-semibold tracking-wide">Galeria <span
                             class="text-purple-500">Inteligente</span></h1>
                 </div>
-                <i class="ph ph-cpu text-2xl bg-white/10 p-1.5 rounded-lg border border-white/10"></i>
+                <div class="relative">
+                    <img src="./images/botao_ia.png" id="btn-organizar-ia"
+                        style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0;"
+                        class="ph ph-cpu text-2xl  p-1.5 rounded-lg cursor-pointer active:scale-90 transition-transform"></img>
+
+                    <!-- Painel de sugestões da IA para as fotos/vídeos -->
+                    <div id="menu-ia-galeria"
+                        class="hidden absolute top-full mt-2 right-0 w-56 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
+                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
+                            data-acao="organizar">
+                            <i class="ph-fill ph-sparkle text-purple-400"></i> Organizar Melhores Fotos
+                        </div>
+                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
+                            data-acao="resolucao">
+                            <i class="ph ph-image text-purple-400"></i> Sugerir Melhor Resolução
+                        </div>
+                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
+                            data-acao="realce">
+                            <i class="ph ph-sun text-purple-400"></i> Melhorar Luz e Nitidez
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Barra de Busca -->
             <div
                 class="flex items-center bg-[#130722] border border-purple-800/50 rounded-full px-4 py-2.5 mb-6 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
                 <i class="ph ph-magnifying-glass text-gray-400 text-lg mr-3"></i>
-                <input type="text" placeholder="Buscar fotos com IA..."
+                <input id="input-busca" type="text" placeholder="Buscar fotos com IA..."
                     class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-500">
                 <i class="ph-fill ph-sparkle text-purple-500 text-lg ml-3"></i>
             </div>
 
             <!-- Filtros Horizontais -->
             <div class="flex overflow-x-auto no-scrollbar gap-3 mb-6 pb-2">
-                <div
-                    class="flex flex-col items-center justify-center bg-[#25103f] border border-purple-500/50 rounded-xl min-w-[80px] h-[60px] cursor-pointer">
+                <div data-filtro=""
+                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#25103f] border border-purple-500/50 rounded-xl min-w-[80px] h-[60px] cursor-pointer">
                     <i class="ph ph-squares-four text-purple-400 text-xl mb-1"></i>
                     <span class="text-[11px] font-semibold">Todos</span>
                 </div>
-                <div
-                    class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="FHD"
+                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">Full HD</span>
                     <span class="text-[10px]">1080p</span>
                 </div>
-                <div
-                    class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="2K"
+                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">2k</span>
                     <span class="text-[10px]">1440p</span>
                 </div>
-                <div
-                    class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="4K"
+                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">4k</span>
                     <span class="text-[10px]">2160p</span>
                 </div>
-                <div
-                    class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="8K"
+                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">8k</span>
                     <span class="text-[10px]">4320p</span>
                 </div>
             </div>
 
             <!-- Banner Organizador IA -->
-            <div class="flex justify-between items-center bg-[#130722] border border-white/10 rounded-2xl p-4 mb-6">
+            <div id="banner-organizar-ia"
+                class="flex justify-between items-center bg-[#130722] border border-white/10 rounded-2xl p-4 mb-6 cursor-pointer">
                 <div class="flex flex-col">
                     <span class="text-[11px] font-bold tracking-wider">IA ORGANIZOU 586 FOTOS</span>
                     <span class="text-[10px] text-gray-400">Separado por Qualidade</span>
@@ -372,8 +436,8 @@
 
 
             <!-- Banner Fim -->
-            <div
-                class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-2xl p-5 mb-4 text-center">
+            <div id="banner-alta-qualidade"
+                class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-2xl p-5 mb-4 text-center cursor-pointer">
                 <span class="text-[11px] font-bold tracking-wider mb-1">FOTOS DE ALTA QUALIDADE</span>
                 <span class="text-[10px] text-gray-400">1.230 fotos em 4K ou superior</span>
             </div>
@@ -387,23 +451,23 @@
 
                 <!-- Botão Câmera (Fecha a Galeria) -->
                 <div id="btn-close-gallery"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1">
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 cursor-pointer active:scale-90 transition-transform">
                     <i class="ph ph-camera text-[22px]"></i>
                     <span class="text-[9px]">Câmera</span>
                 </div>
 
                 <!-- Botão Buscar -->
-                <div
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1">
+                <div id="nav-buscar"
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 cursor-pointer active:scale-90 transition-transform">
                     <i class="ph ph-magnifying-glass text-[22px]"></i>
                     <span class="text-[9px]">Buscar</span>
                 </div>
 
                 <!-- Botão Central Sugestões IA -->
-                <div class="flex flex-col items-center justify-end cursor-pointer relative">
+                <div id="nav-sugestoes" class="flex flex-col items-center justify-end cursor-pointer relative">
                     <!-- O Círculo flutuante com posição ajustada -->
                     <div
-                        class="absolute -top-11 bg-[#1a0b26] border border-purple-500/30 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                        class="absolute -top-11 bg-[#1a0b26] border border-purple-500/30 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.3)] cursor-pointer active:scale-90 transition-transform">
                         <i class="ph-fill ph-sparkle text-white text-[26px]"></i>
                     </div>
                     <!-- Texto fixado na base igual aos outros -->
@@ -411,22 +475,21 @@
                 </div>
 
                 <!-- Botão Favoritos -->
-                <div
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1">
+                <div id="nav-favoritos"
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 cursor-pointer active:scale-90 transition-transform">
                     <i class="ph ph-heart text-[22px]"></i>
                     <span class="text-[9px]">Favoritos</span>
                 </div>
 
                 <!-- Botão Álbuns -->
-                <div class="flex flex-col items-center justify-end gap-1 cursor-pointer text-purple-400 pb-1">
+                <div id="nav-albuns"
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-purple-400 pb-1 cursor-pointer active:scale-90 transition-transform">
                     <i class="ph ph-images text-[22px]"></i>
                     <span class="text-[9px]">Álbuns</span>
                 </div>
             </div>
-
-            <!-- Barrinha iOS -->
-            <div class="w-1/3 h-1 bg-white/20 mx-auto rounded-full mt-3"></div>
         </div>
+
         <!-- ================= FIM DA GALERIA INTELIGENTE ================= -->
 
         <!-- ================= INÍCIO: VISUALIZADOR DE FOTOS (TELA CHEIA) ================= -->
@@ -443,7 +506,24 @@
                 <i id="btn-close-modal"
                     class="ph ph-caret-left text-3xl text-white cursor-pointer active:text-gray-400"></i>
                 <span class="text-white font-semibold tracking-wide text-sm">Visualizar</span>
-                <i class="ph ph-dots-three-vertical text-3xl text-white cursor-pointer active:text-gray-400"></i>
+                <div class="flex items-center gap-4 relative">
+                    <i id="btn-ia-foto"
+                        class="ph-fill ph-sparkle text-2xl text-white cursor-pointer active:text-gray-400"></i>
+                    <i class="ph ph-dots-three-vertical text-3xl text-white cursor-pointer active:text-gray-400"></i>
+
+                    <!-- Painel de IA para a foto aberta -->
+                    <div id="menu-ia-foto"
+                        class="hidden absolute top-full mt-2 right-0 w-56 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
+                        <div class="ia-acao-foto flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
+                            data-acao="resolucao">
+                            <i class="ph ph-image text-purple-400"></i> Sugerir Melhor Resolução
+                        </div>
+                        <div class="ia-acao-foto flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
+                            data-acao="realce">
+                            <i class="ph ph-sun text-purple-400"></i> Melhorar Luz e Nitidez
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- A Imagem Grande Central -->
@@ -455,13 +535,16 @@
             <div
                 class="absolute bottom-0 w-full pb-8 pt-4 px-8 flex justify-between items-center z-10 bg-gradient-to-t from-black/80 to-transparent">
                 <i class="ph ph-export text-2xl text-white cursor-pointer active:text-gray-400"></i>
-                <i class="ph ph-heart text-2xl text-white cursor-pointer active:text-gray-400"></i>
+                <i id="btn-favoritar-foto"
+                    class="ph ph-heart text-2xl text-white cursor-pointer active:text-gray-400"></i>
                 <i class="ph ph-trash text-2xl text-white cursor-pointer active:text-gray-400"></i>
             </div>
         </div>
         <!-- ================= FIM: VISUALIZADOR DE FOTOS ================= -->
 
-        <script src="./js/script.js"></script>
+    </div>
+
+    <script src="./js/script.js?v=7"></script>
 </body>
 
 </html>
