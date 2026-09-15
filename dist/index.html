@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Câmera JOVI</title>
 
-    <link href="./css/styles.css?v=7" rel="stylesheet">
+    <link href="./css/styles.css" rel="stylesheet">
 
-    <!-- Biblioteca de Ícones (Phosphor Icons) -->
+    <!-- Biblioteca de Ícones (Phosphor Icons) IMPORTADA NOVAMENTE -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- Estilo extra para esconder a barra de rolagem horizontal -->
@@ -60,7 +60,8 @@
         <!-- WRAPPER DO BOTÃO + MENU DA IA -->
         <div class="relative flex justify-center">
             <!-- Botão IA -->
-            <img id="btn-ai" src="./images/botao_ia.png" class="cursor-pointer active:scale-90 transition-transform relative z-10"
+            <img id="btn-ai" src="./images/botao_ia.png"
+                class="cursor-pointer active:scale-90 transition-transform relative z-10"
                 style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="icone de IA">
 
             <!-- Menu Flutuante ancorado no meio do botão -->
@@ -71,8 +72,8 @@
                     <div class="bg-black text-yellow-500 rounded-b-xl px-5 py-0.5 text-[10px] font-bold">V</div>
                 </div>
 
-                <!-- Item 1 (Transparente com bg-white/10) -->
-                <div
+                <!-- Item 1 -->
+                <div data-ajuste="auto"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-gear text-[22px] text-gray-900 drop-shadow-sm"></i>
@@ -86,7 +87,7 @@
                 </div>
 
                 <!-- Item 2 -->
-                <div
+                <div data-ajuste="noturna"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph-fill ph-moon text-[22px] text-gray-900 drop-shadow-sm"></i>
@@ -100,7 +101,7 @@
                 </div>
 
                 <!-- Item 3 -->
-                <div
+                <div data-ajuste="resolucao"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-image text-[22px] text-gray-900 drop-shadow-sm"></i>
@@ -111,12 +112,11 @@
                     </div>
                     <div
                         class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
-                        <i class="ph-bold ph-check text-[10px]"></i>
-                    </div>
+                        <i class="ph-bold ph-check text-[10px]"></i></div>
                 </div>
 
                 <!-- Item 4 -->
-                <div
+                <div data-ajuste="nitidez"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph-fill ph-mountains text-[22px] text-gray-900 drop-shadow-sm"></i>
@@ -127,12 +127,11 @@
                     </div>
                     <div
                         class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
-                        <i class="ph-bold ph-check text-[10px]"></i>
-                    </div>
+                        <i class="ph-bold ph-check text-[10px]"></i></div>
                 </div>
 
                 <!-- Item 5 -->
-                <div
+                <div data-ajuste="desfoque"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-circles-four text-[22px] text-gray-900 drop-shadow-sm"></i>
@@ -144,12 +143,11 @@
                     </div>
                     <div
                         class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
-                        <i class="ph-bold ph-check text-[10px]"></i>
-                    </div>
+                        <i class="ph-bold ph-check text-[10px]"></i></div>
                 </div>
 
                 <!-- Item 6 -->
-                <div
+                <div data-ajuste="filtro"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-funnel text-[22px] text-gray-900 drop-shadow-sm"></i>
@@ -165,21 +163,52 @@
         </div>
         <!-- Fim do Wrapper Botão+Menu -->
 
-        <div class="border border-white/50 px-3 py-0.5 rounded-full text-xs font-semibold tracking-wider">
+        <div id="btn-aspecto"
+            class="border border-white/50 px-3 py-0.5 rounded-full text-xs font-semibold tracking-wider cursor-pointer active:scale-90 transition-transform">
             4:5
         </div>
 
-        <img src="./images/botao_timer.png" style="width: 40px; height: 40px; object-fit: contain; flex-shrink: 0;"
-            alt="icone de timer">
-        <img src="./images/botao_config.png" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;"
-            alt="icone de configuração">
+        <div class="relative">
+            <img id="btn-timer" src="./images/botao_timer.png"
+                style="width: 40px; height: 40px; object-fit: contain; flex-shrink: 0;"
+                class="cursor-pointer active:scale-90 transition-transform" alt="icone de timer">
+            <span id="timer-badge"
+                class="hidden absolute -bottom-1 -right-1 text-[9px] font-bold bg-yellow-400 text-black rounded-full w-4 h-4 flex items-center justify-center leading-none"></span>
+        </div>
+
+        <div class="relative">
+            <img id="btn-config" src="./images/botao_config.png"
+                style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;"
+                class="cursor-pointer active:scale-90 transition-transform" alt="icone de configuração">
+
+            <!-- Painel de Configurações -->
+            <div id="menu-config"
+                class="hidden absolute top-full mt-2 right-0 w-48 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
+                <div id="btn-grade"
+                    class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer">
+                    <span>Linhas de Grade</span>
+                    <div class="check-indicator w-[16px] h-[16px] rounded-full border-[1.5px] border-yellow-400"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Viewfinder (Área do vídeo/foto) QUE HAVIA SIDO APAGADA -->
-    <div class="relative flex-grow bg-gray-900 mt-2 mx-1 rounded-sm overflow-hidden flex items-center justify-center">
+    <!-- Viewfinder (Área do vídeo/foto) -->
+    <div id="viewfinder"
+        class="relative flex-grow bg-gray-900 mt-2 mx-1 rounded-sm overflow-hidden flex items-center justify-center">
 
         <!-- Elemento de Vídeo da WebCam -->
         <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
+
+        <!-- Grade de enquadramento (ligada/desligada pelo botão de Configurações) -->
+        <div id="grade-overlay" class="hidden absolute inset-0 z-10 pointer-events-none"
+            style="background-image: linear-gradient(to right, rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.5) 1px, transparent 1px); background-size: 33.333% 33.333%;">
+        </div>
+
+        <!-- Contagem regressiva do autotimer -->
+        <div id="timer-contagem"
+            class="hidden absolute inset-0 z-20 items-center justify-center text-white text-7xl font-bold bg-black/30">
+        </div>
 
         <!-- Overlay: Zoom 1x -->
         <div
@@ -191,13 +220,13 @@
     <!-- Menu de Modos da Câmera -->
     <div class="py-4 mt-2">
         <ul class="flex overflow-x-auto no-scrollbar gap-6 px-1/2 justify-center text-[13px] items-center">
-            <li class="text-gray-400 whitespace-nowrap cursor-pointer">Noite</li>
-            <li class="text-gray-400 whitespace-nowrap cursor-pointer">Retrato</li>
+            <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Noite</li>
+            <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Retrato</li>
             <li
-                class="bg-gray-800/80 text-pink-600 rounded-full px-5 py-1.5 font-semibold whitespace-nowrap cursor-pointer">
+                class="modo-camera bg-gray-800/80 text-pink-600 rounded-full px-5 py-1.5 font-semibold whitespace-nowrap cursor-pointer">
                 Foto</li>
-            <li class="text-gray-400 whitespace-nowrap cursor-pointer">Video</li>
-            <li class="text-gray-400 whitespace-nowrap cursor-pointer">Microfilme</li>
+            <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Video</li>
+            <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Microfilme</li>
         </ul>
     </div>
 
@@ -229,8 +258,6 @@
 
         <!-- Área Rolável -->
         <div class="flex-grow overflow-y-auto pb-28 px-5 no-scrollbar">
-
-
 
             <!-- Cabeçalho -->
             <div class="flex justify-between items-center mt-2 mb-6">
@@ -269,7 +296,7 @@
                 <div class="relative">
                     <img src="./images/botao_ia.png" id="btn-organizar-ia"
                         style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0;"
-                        class="ph ph-cpu text-2xl  p-1.5 rounded-lg cursor-pointer active:scale-90 transition-transform"></img>
+                        class="p-1.5 rounded-lg cursor-pointer active:scale-90 transition-transform">
 
                     <!-- Painel de sugestões da IA para as fotos/vídeos -->
                     <div id="menu-ia-galeria"
@@ -344,8 +371,7 @@
             <div class="flex items-center justify-between text-[11px] font-bold text-gray-400 mb-4 tracking-wider">
                 <span>MELHORES FOTOS</span>
                 <div class="h-[1px] bg-white/10 flex-grow mx-3"></div>
-                <span class="text-white flex items-center cursor-pointer">Ver Todas <i
-                        class="ph ph-caret-right ml-1 text-sm"></i></span>
+                <span class="text-white flex items-center cursor-pointer">Ver Todas <i class="ph ph-caret-right ml-1 text-sm"></i></span>
             </div>
 
             <!-- Grid de Fotos (Agora com 9 fotos) -->
@@ -356,8 +382,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         8K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 2 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -365,8 +390,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         8K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 3 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -374,8 +398,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         4K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 4 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -383,8 +406,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         4K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 5 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -392,8 +414,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         4K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 6 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -401,8 +422,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         2K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 7 (Nova) -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -410,8 +430,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         4K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 8 (Nova) -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -419,8 +438,7 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         2K</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 9 (Nova) -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
@@ -428,12 +446,9 @@
                     <div
                         class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
                         FHD</div>
-                    <i
-                        class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+                    <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
             </div>
-
-
 
             <!-- Banner Fim -->
             <div id="banner-alta-qualidade"
@@ -446,44 +461,41 @@
 
         <!-- Menu de Navegação Inferior (Barra de Tarefas) -->
         <div class="fixed bottom-0 w-full bg-[#0a0514]/95 backdrop-blur-xl border-t border-white/5 pb-5 pt-3 z-[110]">
-            <!-- Usando grid de 5 colunas para forçar o alinhamento perfeito -->
             <div class="grid grid-cols-5 items-end px-2">
 
                 <!-- Botão Câmera (Fecha a Galeria) -->
                 <div id="btn-close-gallery"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 cursor-pointer active:scale-90 transition-transform">
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-camera text-[22px]"></i>
                     <span class="text-[9px]">Câmera</span>
                 </div>
 
                 <!-- Botão Buscar -->
                 <div id="nav-buscar"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 cursor-pointer active:scale-90 transition-transform">
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-magnifying-glass text-[22px]"></i>
                     <span class="text-[9px]">Buscar</span>
                 </div>
 
                 <!-- Botão Central Sugestões IA -->
                 <div id="nav-sugestoes" class="flex flex-col items-center justify-end cursor-pointer relative">
-                    <!-- O Círculo flutuante com posição ajustada -->
                     <div
                         class="absolute -top-11 bg-[#1a0b26] border border-purple-500/30 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.3)] cursor-pointer active:scale-90 transition-transform">
                         <i class="ph-fill ph-sparkle text-white text-[26px]"></i>
                     </div>
-                    <!-- Texto fixado na base igual aos outros -->
                     <span class="text-[9px] text-gray-300 mt-7 pb-1">Sugestões IA</span>
                 </div>
 
                 <!-- Botão Favoritos -->
                 <div id="nav-favoritos"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 cursor-pointer active:scale-90 transition-transform">
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-heart text-[22px]"></i>
                     <span class="text-[9px]">Favoritos</span>
                 </div>
 
                 <!-- Botão Álbuns -->
                 <div id="nav-albuns"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-purple-400 pb-1 cursor-pointer active:scale-90 transition-transform">
+                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-purple-400 pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-images text-[22px]"></i>
                     <span class="text-[9px]">Álbuns</span>
                 </div>
@@ -500,7 +512,7 @@
         <!-- Modal de Visualização de Foto -->
         <div id="photo-modal" class="fixed inset-0 bg-black z-[200] hidden flex-col justify-center items-center">
 
-            <!-- Barra superior do visualizador com o botão de voltar funcionando -->
+            <!-- Barra superior do visualizador -->
             <div
                 class="absolute top-0 w-full pt-8 pb-4 px-6 flex justify-between items-center z-10 bg-gradient-to-b from-black/80 to-transparent">
                 <i id="btn-close-modal"
@@ -535,16 +547,15 @@
             <div
                 class="absolute bottom-0 w-full pb-8 pt-4 px-8 flex justify-between items-center z-10 bg-gradient-to-t from-black/80 to-transparent">
                 <i class="ph ph-export text-2xl text-white cursor-pointer active:text-gray-400"></i>
-                <i id="btn-favoritar-foto"
-                    class="ph ph-heart text-2xl text-white cursor-pointer active:text-gray-400"></i>
-                <i class="ph ph-trash text-2xl text-white cursor-pointer active:text-gray-400"></i>
+                <i id="btn-favoritar-foto" class="ph ph-heart text-2xl text-white cursor-pointer active:text-gray-400"></i>
+                <i id="btn-excluir-foto" class="ph ph-trash text-2xl text-white cursor-pointer active:text-gray-400"></i>
             </div>
         </div>
         <!-- ================= FIM: VISUALIZADOR DE FOTOS ================= -->
 
     </div>
 
-    <script src="./js/script.js?v=7"></script>
+    <script src="./js/script.js"></script>
 </body>
 
 </html>

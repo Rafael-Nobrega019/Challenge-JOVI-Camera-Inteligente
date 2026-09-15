@@ -25,7 +25,7 @@ async function startCamera() {
         video.parentElement.innerHTML += `
             <div class="absolute inset-0 flex items-center justify-center bg-gray-900 text-gray-400 text-center px-4">
                 <div>
-                    <i class="ph ph-camera-slash text-4xl mb-2"></i><br>
+                    <div class="text-4xl mb-2 text-center">📷</div>
                     Permita o acesso à câmera para testar.
                 </div>
             </div>`;
@@ -86,22 +86,46 @@ btnAi.addEventListener('click', () => {
     aiMenu.classList.toggle('hidden');
 });
 
+// Cada ajuste aplica um efeito de verdade na imagem da câmera (brilho/contraste/saturação)
+const AJUSTES_FILTRO = {
+    auto: 'brightness(1.05) contrast(1.05) saturate(1.05)',
+    noturna: 'brightness(1.35) contrast(1.15)',
+    resolucao: 'contrast(1.08)',
+    nitidez: 'contrast(1.15) saturate(1.1)',
+    desfoque: 'blur(1.5px)',
+    filtro: 'sepia(0.25) saturate(1.3) contrast(1.05)',
+};
+
+// Soma o efeito de todos os ajustes ligados e aplica no vídeo da câmera
+function atualizarFiltroCamera() {
+    const filtros = [...document.querySelectorAll('.ai-menu-item')]
+        .filter(item => item.querySelector('.check-indicator').classList.contains('bg-yellow-400'))
+        .map(item => AJUSTES_FILTRO[item.dataset.ajuste])
+        .filter(Boolean);
+    video.style.filter = filtros.join(' ') || 'none';
+}
+
 // Lógica das bolinhas amarelas do Menu IA
 const aiItems = document.querySelectorAll('.ai-menu-item');
 aiItems.forEach(item => {
     item.addEventListener('click', () => {
         const indicador = item.querySelector('.check-indicator');
-        if (indicador.classList.contains('bg-yellow-400')) {
+        const ligado = indicador.classList.contains('bg-yellow-400');
+        if (ligado) {
             indicador.classList.remove('bg-yellow-400', 'flex', 'items-center', 'justify-center', 'text-white');
             indicador.classList.add('border-[1.5px]', 'border-yellow-400');
-            indicador.innerHTML = ''; 
+            indicador.innerHTML = '';
         } else {
             indicador.classList.remove('border-[1.5px]', 'border-yellow-400');
-            indicador.classList.add('bg-yellow-400', 'flex', 'items-center', 'justify-center', 'text-white');
-            indicador.innerHTML = '<i class="ph-bold ph-check text-[10px]"></i>'; 
+            indicador.classList.add('bg-yellow-400', 'flex', 'items-center', 'justify-center', 'text-white', 'text-[10px]', 'leading-none');
+            indicador.textContent = '✓';
         }
+
+
+        atualizarFiltroCamera();
     });
 });
+atualizarFiltroCamera();
 
 // ==========================================
 // 3. GALERIA INTELIGENTE
@@ -139,7 +163,7 @@ function abrirFotoEmTelaCheia(src, elemento) {
     modalImage.src = src;
     fotoAtualElemento = elemento || null;
     const favoritada = !!fotoAtualElemento?.classList.contains('favorito');
-    btnFavoritarFoto.classList.toggle('ph-fill', favoritada);
+    btnFavoritarFoto.textContent = favoritada ? '❤' : '♡';
     btnFavoritarFoto.classList.toggle('text-pink-500', favoritada);
     photoModal.classList.remove('hidden');
     photoModal.classList.add('flex');
@@ -150,8 +174,16 @@ const btnFavoritarFoto = document.getElementById('btn-favoritar-foto');
 btnFavoritarFoto.addEventListener('click', () => {
     if (!fotoAtualElemento) return;
     const favoritada = fotoAtualElemento.classList.toggle('favorito');
-    btnFavoritarFoto.classList.toggle('ph-fill', favoritada);
+    btnFavoritarFoto.textContent = favoritada ? '❤' : '♡';
     btnFavoritarFoto.classList.toggle('text-pink-500', favoritada);
+});
+
+// Lixeira: exclui a foto aberta da galeria e fecha o visualizador
+const btnExcluirFoto = document.getElementById('btn-excluir-foto');
+btnExcluirFoto.addEventListener('click', () => {
+    fotoAtualElemento?.remove();
+    fotoAtualElemento = null;
+    btnCloseModal.click();
 });
 
 // Fechar tela cheia
@@ -194,8 +226,8 @@ document.querySelectorAll('#gallery-grid > div').forEach(item => {
     });
 });
 
-// Clicou no botão de TIRAR FOTO (Obturador)
-shutterBtn.addEventListener('click', () => {
+// Captura de fato a foto (chamada direto, ou no fim da contagem do autotimer)
+function tirarFoto() {
 
     // Modo "off" nunca dispara o flash; "on" e "auto" disparam
     const dispararFlash = modoFlash !== 'off';
@@ -232,7 +264,7 @@ shutterBtn.addEventListener('click', () => {
     novaDiv.innerHTML = `
         <img src="${fotoDataUrl}" class="w-full h-full object-cover" alt="Sua Foto">
         <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-purple-600/80 backdrop-blur-md shadow-[0_0_8px_rgba(168,85,247,0.5)]">NOVA</div>
-        <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
+        <span class="absolute top-1 right-1 text-white shadow-black drop-shadow-md leading-none">⋮</span>
     `;
     
     // Deixa a foto recém-criada clicável
@@ -240,6 +272,80 @@ shutterBtn.addEventListener('click', () => {
     
     // "prepend" joga ela para o topo do grid da galeria
     galleryGrid.prepend(novaDiv);
+}
+
+// Autotimer: Desligado -> 3s -> 10s -> Desligado...
+const TEMPOS_TIMER = [0, 3, 10];
+let indiceTimer = 0;
+const btnTimer = document.getElementById('btn-timer');
+const timerBadge = document.getElementById('timer-badge');
+btnTimer.addEventListener('click', () => {
+    indiceTimer = (indiceTimer + 1) % TEMPOS_TIMER.length;
+    const segundos = TEMPOS_TIMER[indiceTimer];
+    timerBadge.textContent = segundos || '';
+    timerBadge.classList.toggle('hidden', !segundos);
+    btnTimer.title = segundos ? `Timer: ${segundos}s` : 'Timer: Desligado';
+});
+
+// Clicou no botão de TIRAR FOTO (Obturador): respeita o autotimer, se estiver ligado
+const timerContagem = document.getElementById('timer-contagem');
+shutterBtn.addEventListener('click', () => {
+    const segundos = TEMPOS_TIMER[indiceTimer];
+    if (!segundos) return tirarFoto();
+
+    let restante = segundos;
+    timerContagem.textContent = restante;
+    timerContagem.classList.remove('hidden');
+    timerContagem.classList.add('flex');
+    const intervalo = setInterval(() => {
+        restante--;
+        if (restante <= 0) {
+            clearInterval(intervalo);
+            timerContagem.classList.add('hidden');
+            timerContagem.classList.remove('flex');
+            tirarFoto();
+        } else {
+            timerContagem.textContent = restante;
+        }
+    }, 1000);
+});
+
+// Proporção da foto (4:5 / 1:1 / 16:9): ajusta o enquadramento do vídeo
+const ASPECTOS = ['4:5', '1:1', '16:9'];
+let indiceAspecto = 0;
+const btnAspecto = document.getElementById('btn-aspecto');
+btnAspecto.addEventListener('click', () => {
+    indiceAspecto = (indiceAspecto + 1) % ASPECTOS.length;
+    const proporcao = ASPECTOS[indiceAspecto];
+    btnAspecto.textContent = proporcao;
+    video.style.aspectRatio = proporcao.replace(':', ' / ');
+    video.style.width = proporcao === '16:9' ? '100%' : 'auto';
+    video.style.height = proporcao === '16:9' ? 'auto' : '100%';
+});
+
+// Configurações: abre/fecha o painel e liga/desliga a grade de enquadramento
+const btnConfig = document.getElementById('btn-config');
+const menuConfig = document.getElementById('menu-config');
+btnConfig.addEventListener('click', () => menuConfig.classList.toggle('hidden'));
+
+const btnGrade = document.getElementById('btn-grade');
+const gradeOverlay = document.getElementById('grade-overlay');
+btnGrade.addEventListener('click', () => {
+    const ligada = btnGrade.querySelector('.check-indicator').classList.toggle('bg-yellow-400');
+    gradeOverlay.classList.toggle('hidden', !ligada);
+});
+
+// Modos da câmera (Noite/Retrato/Foto/Video/Microfilme): só um fica ativo por vez
+const CLASSES_MODO_ATIVO = ['bg-gray-800/80', 'text-pink-600', 'rounded-full', 'px-5', 'py-1.5', 'font-semibold'];
+document.querySelectorAll('.modo-camera').forEach(modo => {
+    modo.addEventListener('click', () => {
+        document.querySelectorAll('.modo-camera').forEach(m => {
+            m.classList.remove(...CLASSES_MODO_ATIVO);
+            m.classList.add('text-gray-400');
+        });
+        modo.classList.remove('text-gray-400');
+        modo.classList.add(...CLASSES_MODO_ATIVO);
+    });
 });
 
 // ==========================================
