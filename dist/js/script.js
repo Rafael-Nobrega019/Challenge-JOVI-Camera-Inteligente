@@ -2,58 +2,49 @@
 // 1. CÂMERA E CONTROLES BÁSICOS
 // ==========================================
 const video = document.getElementById('camera-feed');
-const switchBtn = document.getElementById('switch-camera');
-const shutterBtn = document.getElementById('shutter');
-
-let currentFacingMode = 'environment';
 let stream = null;
+let currentFacingMode = 'environment';
 
 async function startCamera() {
     if (stream) {
         stream.getTracks().forEach(track => track.stop());
     }
-
     try {
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: currentFacingMode
-            }
-        });
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
         video.srcObject = stream;
     } catch (err) {
-        console.error("Erro ao acessar a câmera: ", err);
-        video.parentElement.innerHTML += `
-            <div class="absolute inset-0 flex items-center justify-center bg-gray-900 text-gray-400 text-center px-4">
-                <div>
-                    <div class="text-4xl mb-2 text-center">📷</div>
-                    Permita o acesso à câmera para testar.
-                </div>
-            </div>`;
+        console.error("Erro da câmera:", err);
+        video.parentElement.insertAdjacentHTML('beforeend', `
+            <div class="absolute inset-0 flex items-center justify-center bg-gray-900 z-50 text-gray-400 text-center px-4">
+                <div><i class="ph ph-camera-slash text-4xl mb-2 text-center block"></i>Permita o acesso à câmera.</div>
+            </div>`);
     }
 }
 
-switchBtn.addEventListener('click', () => {
-    currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+document.getElementById('switch-camera').addEventListener('click', () => {
+    if (currentFacingMode === 'environment') {
+        currentFacingMode = 'user';
+    } else {
+        currentFacingMode = 'environment';
+    }
     startCamera();
 });
-
 startCamera();
 
 // ==========================================
-// 1.1 CONTROLE DE FLASH (Automático / Ligado / Desligado)
+// 1.1 CONTROLE DE FLASH
 // ==========================================
 const btnFlash = document.getElementById('btn-flash');
 const flashIcon = document.getElementById('flash-icon');
 const flashAutoBadge = document.getElementById('flash-auto-badge');
-
 const MODOS_FLASH = ['auto', 'on', 'off'];
 let modoFlash = 'auto';
 
-// Atualiza o ícone conforme o modo atual (raio aceso, cortado, ou com selo "A")
-function atualizarIconeFlash() {
+btnFlash.addEventListener('click', () => {
+    modoFlash = MODOS_FLASH[(MODOS_FLASH.indexOf(modoFlash) + 1) % 3];
+    
     flashIcon.className = 'ph-fill text-[22px] transition-colors';
-    flashAutoBadge.classList.add('hidden');
-
+    
     if (modoFlash === 'off') {
         flashIcon.classList.add('ph-lightning-slash', 'text-white/60');
         btnFlash.title = 'Flash: Desligado';
@@ -62,31 +53,24 @@ function atualizarIconeFlash() {
         btnFlash.title = 'Flash: Ligado';
     } else {
         flashIcon.classList.add('ph-lightning', 'text-white');
-        flashAutoBadge.classList.remove('hidden');
         btnFlash.title = 'Flash: Automático';
     }
-}
-
-// Clique no botão: percorre o ciclo Automático -> Ligado -> Desligado -> Automático...
-btnFlash.addEventListener('click', () => {
-    modoFlash = MODOS_FLASH[(MODOS_FLASH.indexOf(modoFlash) + 1) % MODOS_FLASH.length];
-    atualizarIconeFlash();
+    
+    if (modoFlash !== 'auto') {
+        flashAutoBadge.classList.add('hidden');
+    } else {
+        flashAutoBadge.classList.remove('hidden');
+    }
 });
-
-atualizarIconeFlash();
 
 // ==========================================
 // 2. MENU DE INTELIGÊNCIA ARTIFICIAL
 // ==========================================
-const btnAi = document.getElementById('btn-ai');
 const aiMenu = document.getElementById('ai-menu');
-
-// Abrir e fechar o menu ao clicar no botão de IA superior
-btnAi.addEventListener('click', () => {
+document.getElementById('btn-ai').addEventListener('click', () => {
     aiMenu.classList.toggle('hidden');
 });
 
-// Cada ajuste aplica um efeito de verdade na imagem da câmera (brilho/contraste/saturação)
 const AJUSTES_FILTRO = {
     auto: 'brightness(1.05) contrast(1.05) saturate(1.05)',
     noturna: 'brightness(1.35) contrast(1.15)',
@@ -96,222 +80,230 @@ const AJUSTES_FILTRO = {
     filtro: 'sepia(0.25) saturate(1.3) contrast(1.05)',
 };
 
-// Soma o efeito de todos os ajustes ligados e aplica no vídeo da câmera
 function atualizarFiltroCamera() {
     const filtros = [...document.querySelectorAll('.ai-menu-item')]
         .filter(item => item.querySelector('.check-indicator').classList.contains('bg-yellow-400'))
         .map(item => AJUSTES_FILTRO[item.dataset.ajuste])
         .filter(Boolean);
-    video.style.filter = filtros.join(' ') || 'none';
+        
+    if (filtros.length > 0) {
+        video.style.filter = filtros.join(' ');
+    } else {
+        video.style.filter = 'none';
+    }
 }
 
-// Lógica das bolinhas amarelas do Menu IA
-const aiItems = document.querySelectorAll('.ai-menu-item');
-aiItems.forEach(item => {
+document.querySelectorAll('.ai-menu-item').forEach(item => {
     item.addEventListener('click', () => {
-        const indicador = item.querySelector('.check-indicator');
-        const ligado = indicador.classList.contains('bg-yellow-400');
+        const ind = item.querySelector('.check-indicator');
+        const ligado = ind.classList.toggle('bg-yellow-400');
+        
         if (ligado) {
-            indicador.classList.remove('bg-yellow-400', 'flex', 'items-center', 'justify-center', 'text-white');
-            indicador.classList.add('border-[1.5px]', 'border-yellow-400');
-            indicador.innerHTML = '';
+            ind.className = 'check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white';
+            ind.innerHTML = '<i class="ph-bold ph-check text-[10px]"></i>';
         } else {
-            indicador.classList.remove('border-[1.5px]', 'border-yellow-400');
-            indicador.classList.add('bg-yellow-400', 'flex', 'items-center', 'justify-center', 'text-white', 'text-[10px]', 'leading-none');
-            indicador.textContent = '✓';
+            ind.className = 'check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400';
+            ind.innerHTML = '';
         }
-
-
+        
         atualizarFiltroCamera();
     });
 });
-atualizarFiltroCamera();
 
 // ==========================================
-// 3. GALERIA INTELIGENTE
+// 3. GALERIA INTELIGENTE & VISUALIZADOR
 // ==========================================
-const btnOpenGallery = document.getElementById('btn-open-gallery');
-const btnCloseGallery = document.getElementById('btn-close-gallery');
 const galleryView = document.getElementById('gallery-view');
-
-// Abre a tela da Galeria
-btnOpenGallery.addEventListener('click', () => {
-    galleryView.classList.remove('hidden');
-    galleryView.classList.add('flex');
+document.getElementById('btn-open-gallery').addEventListener('click', () => { 
+    galleryView.classList.remove('hidden'); 
+    galleryView.classList.add('flex'); 
+});
+document.getElementById('btn-close-gallery').addEventListener('click', () => { 
+    galleryView.classList.add('hidden'); 
+    galleryView.classList.remove('flex'); 
 });
 
-// Fecha a tela da Galeria (Botão Câmera na barra inferior)
-btnCloseGallery.addEventListener('click', () => {
-    galleryView.classList.add('hidden');
-    galleryView.classList.remove('flex');
-});
-
-// ==========================================
-// 4. TIRAR FOTOS & VISUALIZADOR TELA CHEIA
-// ==========================================
 const canvas = document.getElementById('photo-canvas');
 const thumbnailImg = document.getElementById('thumbnail-img');
 const galleryGrid = document.getElementById('gallery-grid');
-
 const photoModal = document.getElementById('photo-modal');
 const modalImage = document.getElementById('modal-image');
-const btnCloseModal = document.getElementById('btn-close-modal');
+const btnFavoritarFoto = document.getElementById('btn-favoritar-foto');
 
-// Função de abrir a foto em tela cheia (Modal)
 let fotoAtualElemento = null;
+
 function abrirFotoEmTelaCheia(src, elemento) {
     modalImage.src = src;
-    fotoAtualElemento = elemento || null;
     
-    const favoritada = !!fotoAtualElemento?.classList.contains('favorito');
+    if (elemento) {
+        fotoAtualElemento = elemento;
+    } else {
+        fotoAtualElemento = null;
+    }
     
-    // Removemos o textContent e usamos as classes ph e ph-fill do Phosphor
-    btnFavoritarFoto.classList.toggle('ph-fill', favoritada);
-    btnFavoritarFoto.classList.toggle('ph', !favoritada);
-    btnFavoritarFoto.classList.toggle('text-pink-500', favoritada);
+    let favoritada = false;
+    if (fotoAtualElemento && fotoAtualElemento.classList.contains('favorito')) {
+        favoritada = true;
+    }
     
-    photoModal.classList.remove('hidden');
-    photoModal.classList.add('flex');
+    if (favoritada) {
+        btnFavoritarFoto.classList.add('ph-fill', 'text-pink-500');
+        btnFavoritarFoto.classList.remove('ph');
+    } else {
+        btnFavoritarFoto.classList.remove('ph-fill', 'text-pink-500');
+        btnFavoritarFoto.classList.add('ph');
+    }
+    
+    photoModal.classList.replace('hidden', 'flex');
 }
 
-// Coração do visualizador: favorita/desfavorita a foto aberta
-const btnFavoritarFoto = document.getElementById('btn-favoritar-foto');
 btnFavoritarFoto.addEventListener('click', () => {
     if (!fotoAtualElemento) return;
     
     const favoritada = fotoAtualElemento.classList.toggle('favorito');
     
-    // Alterna dinamicamente entre o ícone vazado e o preenchido
-    btnFavoritarFoto.classList.toggle('ph-fill', favoritada);
-    btnFavoritarFoto.classList.toggle('ph', !favoritada);
-    btnFavoritarFoto.classList.toggle('text-pink-500', favoritada);
+    if (favoritada) {
+        btnFavoritarFoto.classList.add('ph-fill', 'text-pink-500');
+        btnFavoritarFoto.classList.remove('ph');
+    } else {
+        btnFavoritarFoto.classList.remove('ph-fill', 'text-pink-500');
+        btnFavoritarFoto.classList.add('ph');
+    }
 });
 
-// Lixeira: exclui a foto aberta da galeria e fecha o visualizador
-const btnExcluirFoto = document.getElementById('btn-excluir-foto');
-btnExcluirFoto.addEventListener('click', () => {
-    fotoAtualElemento?.remove();
-    fotoAtualElemento = null;
-    btnCloseModal.click();
+document.getElementById('btn-excluir-foto').addEventListener('click', () => {
+    if (fotoAtualElemento) {
+        fotoAtualElemento.remove();
+        fotoAtualElemento = null;
+    }
+    document.getElementById('btn-close-modal').click();
 });
 
-// Fechar tela cheia
-btnCloseModal.addEventListener('click', () => {
-    photoModal.classList.add('hidden');
-    photoModal.classList.remove('flex');
+document.getElementById('btn-close-modal').addEventListener('click', () => {
+    photoModal.classList.replace('flex', 'hidden');
     modalImage.classList.remove('ia-realce');
-    document.getElementById('badge-resolucao')?.remove();
+    
+    const badgeReq = document.getElementById('badge-resolucao');
+    if (badgeReq) {
+        badgeReq.remove();
+    }
 });
 
-// Painel de IA dentro do visualizador de foto (resolução e iluminação)
-const btnIaFoto = document.getElementById('btn-ia-foto');
+// IA da Foto Aberta
 const menuIaFoto = document.getElementById('menu-ia-foto');
-btnIaFoto.addEventListener('click', () => menuIaFoto.classList.toggle('hidden'));
+document.getElementById('btn-ia-foto').addEventListener('click', () => {
+    menuIaFoto.classList.toggle('hidden');
+});
 
-const ACOES_IA_FOTO = {
-    resolucao: () => {
-        const badgeExistente = document.getElementById('badge-resolucao');
-        if (badgeExistente) return badgeExistente.remove();
-        const badge = document.createElement('div');
-        badge.id = 'badge-resolucao';
-        badge.className = 'absolute top-24 left-1/2 -translate-x-1/2 bg-purple-600/80 text-white text-xs font-semibold px-3 py-1.5 rounded-full z-20';
-        badge.textContent = 'IA sugere: 4K Ultra HD';
-        photoModal.appendChild(badge);
-    },
-    realce: () => modalImage.classList.toggle('ia-realce'),
-};
 document.querySelectorAll('#menu-ia-foto .ia-acao-foto').forEach(item => {
     item.addEventListener('click', () => {
-        ACOES_IA_FOTO[item.dataset.acao]?.();
+        if (item.dataset.acao === 'resolucao') {
+            if (!document.getElementById('badge-resolucao')) {
+                photoModal.insertAdjacentHTML('beforeend', `<div id="badge-resolucao" class="absolute top-24 left-1/2 -translate-x-1/2 bg-purple-600/80 text-white text-xs font-semibold px-3 py-1.5 rounded-full z-20 shadow-md">IA sugere: 4K Ultra HD</div>`);
+            }
+        } else if (item.dataset.acao === 'realce') {
+            modalImage.classList.toggle('ia-realce');
+        }
         menuIaFoto.classList.add('hidden');
     });
 });
 
-// Fazer as 9 fotos HTML (hardcoded) iniciais ficarem clicáveis
+// Clique inicial nas 9 fotos chumbadas no HTML
 document.querySelectorAll('#gallery-grid > div').forEach(item => {
     item.addEventListener('click', () => {
-        const imgSrc = item.querySelector('img').src;
-        abrirFotoEmTelaCheia(imgSrc, item);
+        abrirFotoEmTelaCheia(item.querySelector('img').src, item);
     });
 });
 
-// Captura de fato a foto (chamada direto, ou no fim da contagem do autotimer)
+// ==========================================
+// 4. TIRAR FOTO E AUTOTIMER
+// ==========================================
 function tirarFoto() {
-
-    // Modo "off" nunca dispara o flash; "on" e "auto" disparam
-    const dispararFlash = modoFlash !== 'off';
-
-    // 1. Efeito visual do Flash
-    if (dispararFlash) {
+    if (modoFlash !== 'off') {
         const flash = document.createElement('div');
         flash.className = 'absolute inset-0 bg-white opacity-0 transition-opacity duration-75 z-50';
         document.body.appendChild(flash);
-
-        setTimeout(() => flash.classList.remove('opacity-0'), 10);
+        
         setTimeout(() => {
-            flash.classList.add('opacity-0');
-            setTimeout(() => flash.remove(), 100);
+            flash.classList.remove('opacity-0');
+        }, 10);
+        
+        setTimeout(() => { 
+            flash.classList.add('opacity-0'); 
+            setTimeout(() => {
+                flash.remove();
+            }, 100); 
         }, 100);
     }
 
-    // 2. Extrai a foto do vídeo para o canvas invisível
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // 3. Converte a foto num link (Base64)
+    if (video.videoWidth) {
+        canvas.width = video.videoWidth;
+    } else {
+        canvas.width = 1080;
+    }
+    
+    if (video.videoHeight) {
+        canvas.height = video.videoHeight;
+    } else {
+        canvas.height = 1920;
+    }
+    
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
     const fotoDataUrl = canvas.toDataURL('image/jpeg');
-
-    // 4. Atualiza a foto do cantinho (miniatura)
+    
     thumbnailImg.src = fotoDataUrl;
-
-    // 5. Injeta a foto recém-tirada como o 1º item da Galeria Inteligente
+    
     const novaDiv = document.createElement('div');
     novaDiv.className = 'aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer active:scale-95 transition-transform';
-    
     novaDiv.innerHTML = `
         <img src="${fotoDataUrl}" class="w-full h-full object-cover" alt="Sua Foto">
         <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-purple-600/80 backdrop-blur-md shadow-[0_0_8px_rgba(168,85,247,0.5)]">NOVA</div>
-        <span class="absolute top-1 right-1 text-white shadow-black drop-shadow-md leading-none">⋮</span>
-    `;
+        <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>`;
     
-    // Deixa a foto recém-criada clicável
-     novaDiv.addEventListener('click', () => abrirFotoEmTelaCheia(fotoDataUrl, novaDiv));
+    novaDiv.addEventListener('click', () => {
+        abrirFotoEmTelaCheia(fotoDataUrl, novaDiv);
+    });
     
-    // "prepend" joga ela para o topo do grid da galeria
     galleryGrid.prepend(novaDiv);
 }
 
-// Autotimer: Desligado -> 3s -> 10s -> Desligado...
 const TEMPOS_TIMER = [0, 3, 10];
-let indiceTimer = 0;
 const btnTimer = document.getElementById('btn-timer');
 const timerBadge = document.getElementById('timer-badge');
+const timerContagem = document.getElementById('timer-contagem');
+let indiceTimer = 0;
+
 btnTimer.addEventListener('click', () => {
     indiceTimer = (indiceTimer + 1) % TEMPOS_TIMER.length;
-    const segundos = TEMPOS_TIMER[indiceTimer];
-    timerBadge.textContent = segundos || '';
-    timerBadge.classList.toggle('hidden', !segundos);
-    btnTimer.title = segundos ? `Timer: ${segundos}s` : 'Timer: Desligado';
+    const seg = TEMPOS_TIMER[indiceTimer];
+    
+    if (seg) {
+        timerBadge.textContent = seg;
+        timerBadge.classList.remove('hidden');
+        btnTimer.title = `Timer: ${seg}s`;
+    } else {
+        timerBadge.textContent = '';
+        timerBadge.classList.add('hidden');
+        btnTimer.title = 'Timer: Desligado';
+    }
 });
 
-// Clicou no botão de TIRAR FOTO (Obturador): respeita o autotimer, se estiver ligado
-const timerContagem = document.getElementById('timer-contagem');
-shutterBtn.addEventListener('click', () => {
-    const segundos = TEMPOS_TIMER[indiceTimer];
-    if (!segundos) return tirarFoto();
+document.getElementById('shutter').addEventListener('click', () => {
+    let restante = TEMPOS_TIMER[indiceTimer];
+    
+    if (!restante) {
+        tirarFoto();
+        return;
+    }
 
-    let restante = segundos;
     timerContagem.textContent = restante;
-    timerContagem.classList.remove('hidden');
-    timerContagem.classList.add('flex');
+    timerContagem.classList.replace('hidden', 'flex');
+    
     const intervalo = setInterval(() => {
         restante--;
         if (restante <= 0) {
             clearInterval(intervalo);
-            timerContagem.classList.add('hidden');
-            timerContagem.classList.remove('flex');
+            timerContagem.classList.replace('flex', 'hidden');
             tirarFoto();
         } else {
             timerContagem.textContent = restante;
@@ -319,138 +311,175 @@ shutterBtn.addEventListener('click', () => {
     }, 1000);
 });
 
-// Proporção da foto (4:5 / 1:1 / 16:9): ajusta o enquadramento do vídeo
+// ==========================================
+// 5. PROPORÇÃO, MODOS E FILTROS DA GALERIA
+// ==========================================
 const ASPECTOS = ['4:5', '1:1', '16:9'];
-let indiceAspecto = 0;
 const btnAspecto = document.getElementById('btn-aspecto');
+let indiceAspecto = 0;
+
 btnAspecto.addEventListener('click', () => {
     indiceAspecto = (indiceAspecto + 1) % ASPECTOS.length;
-    const proporcao = ASPECTOS[indiceAspecto];
-    btnAspecto.textContent = proporcao;
-    video.style.aspectRatio = proporcao.replace(':', ' / ');
-    video.style.width = proporcao === '16:9' ? '100%' : 'auto';
-    video.style.height = proporcao === '16:9' ? 'auto' : '100%';
+    const prop = ASPECTOS[indiceAspecto];
+    
+    btnAspecto.textContent = prop;
+    video.style.aspectRatio = prop.replace(':', ' / ');
+    
+    if (prop === '16:9') {
+        video.style.width = '100%';
+        video.style.height = 'auto';
+    } else {
+        video.style.width = 'auto';
+        video.style.height = '100%';
+    }
 });
 
-// Configurações: abre/fecha o painel e liga/desliga a grade de enquadramento
-const btnConfig = document.getElementById('btn-config');
-const menuConfig = document.getElementById('menu-config');
-btnConfig.addEventListener('click', () => menuConfig.classList.toggle('hidden'));
-
-const btnGrade = document.getElementById('btn-grade');
-const gradeOverlay = document.getElementById('grade-overlay');
-btnGrade.addEventListener('click', () => {
-    const ligada = btnGrade.querySelector('.check-indicator').classList.toggle('bg-yellow-400');
-    gradeOverlay.classList.toggle('hidden', !ligada);
-});
-
-// Modos da câmera (Noite/Retrato/Foto/Video/Microfilme): só um fica ativo por vez
-const CLASSES_MODO_ATIVO = ['bg-gray-800/80', 'text-pink-600', 'rounded-full', 'px-5', 'py-1.5', 'font-semibold'];
+const CLASSES_MODO = ['bg-gray-800/80', 'text-pink-600', 'rounded-full', 'px-5', 'py-1.5', 'font-semibold'];
 document.querySelectorAll('.modo-camera').forEach(modo => {
     modo.addEventListener('click', () => {
-        document.querySelectorAll('.modo-camera').forEach(m => {
-            m.classList.remove(...CLASSES_MODO_ATIVO);
-            m.classList.add('text-gray-400');
+        document.querySelectorAll('.modo-camera').forEach(m => { 
+            m.classList.remove(...CLASSES_MODO); 
+            m.classList.add('text-gray-400'); 
         });
         modo.classList.remove('text-gray-400');
-        modo.classList.add(...CLASSES_MODO_ATIVO);
+        modo.classList.add(...CLASSES_MODO);
     });
 });
 
-// ==========================================
-// 5. MENU, ORGANIZAR IA, FILTROS E NAV. DA GALERIA
-// ==========================================
-const menuToggle = document.getElementById('menu-toggle');
+// Navegação Galeria
 const menuLateral = document.getElementById('menu-lateral');
-const btnOrganizarIA = document.getElementById('btn-organizar-ia');
-const inputBusca = document.getElementById('input-busca');
-const bannerAltaQualidade = document.getElementById('banner-alta-qualidade');
-const navBuscar = document.getElementById('nav-buscar');
-const navSugestoes = document.getElementById('nav-sugestoes');
-const navFavoritos = document.getElementById('nav-favoritos');
-const navAlbuns = document.getElementById('nav-albuns');
+document.getElementById('menu-toggle').addEventListener('click', () => {
+    menuLateral.classList.toggle('hidden');
+});
 
-// Menu (☰): abre/fecha a lista de para onde ir dentro da galeria
-menuToggle.addEventListener('click', () => menuLateral.classList.toggle('hidden'));
-
-// Cada item do menu fecha o menu e "clica" no botão real correspondente da barra inferior
 document.querySelectorAll('#menu-lateral .menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-        menuLateral.classList.add('hidden');
-        document.getElementById(item.dataset.alvo)?.click();
+    item.addEventListener('click', () => { 
+        menuLateral.classList.add('hidden'); 
+        const alvo = document.getElementById(item.dataset.alvo);
+        if (alvo) {
+            alvo.click();
+        }
     });
 });
 
-// Álbuns: volta a mostrar todas as fotos (remove qualquer filtro de qualidade ativo)
-navAlbuns.addEventListener('click', () => filtrarPorQualidade(null));
+// Ordenação IA
+const ORDEM = { '8K': 4, '4K': 3, '2K': 2, 'FHD': 1 };
 
-// Ordena as fotos da melhor pra pior qualidade (usado pelo banner e pelo painel de IA)
-const ORDEM_QUALIDADE = { '8K': 4, '4K': 3, '2K': 2, FHD: 1 };
 function organizarPorQualidade() {
-    [...galleryGrid.children]
-        .sort((a, b) => (ORDEM_QUALIDADE[b.querySelector('div')?.textContent.trim()] || 0)
-            - (ORDEM_QUALIDADE[a.querySelector('div')?.textContent.trim()] || 0))
-        .forEach(el => galleryGrid.appendChild(el));
+    const fotos = Array.from(galleryGrid.children);
+    fotos.sort((a, b) => {
+        const divA = a.querySelector('div');
+        const divB = b.querySelector('div');
+        
+        let valorA = 0;
+        if (divA) {
+            valorA = ORDEM[divA.textContent.trim()] || 0;
+        }
+        
+        let valorB = 0;
+        if (divB) {
+            valorB = ORDEM[divB.textContent.trim()] || 0;
+        }
+        
+        return valorB - valorA;
+    });
+    
+    fotos.forEach(el => {
+        galleryGrid.appendChild(el);
+    });
 }
 
-// Banner "IA organizou por qualidade"
-const bannerOrganizarIA = document.getElementById('banner-organizar-ia');
-bannerOrganizarIA.addEventListener('click', organizarPorQualidade);
+document.getElementById('banner-organizar-ia').addEventListener('click', organizarPorQualidade);
+document.getElementById('nav-sugestoes').addEventListener('click', organizarPorQualidade);
 
-// Painel de IA (CPU e Sugestões IA abrem o mesmo painel de ações)
 const menuIaGaleria = document.getElementById('menu-ia-galeria');
-function abrirFecharMenuIA() {
+document.getElementById('btn-organizar-ia').addEventListener('click', () => {
     menuIaGaleria.classList.toggle('hidden');
-}
-btnOrganizarIA.addEventListener('click', abrirFecharMenuIA);
-navSugestoes.addEventListener('click', abrirFecharMenuIA);
+});
 
-// Ações reais de cada item do painel de IA
-const ACOES_IA = {
-    organizar: organizarPorQualidade,
-    resolucao: () => document.querySelector('[data-filtro="4K"]')?.click(),
-    realce: () => galleryGrid.querySelectorAll('img').forEach(img => img.classList.toggle('ia-realce')),
-};
 document.querySelectorAll('#menu-ia-galeria .ia-acao').forEach(item => {
     item.addEventListener('click', () => {
-        ACOES_IA[item.dataset.acao]?.();
+        if (item.dataset.acao === 'organizar') {
+            organizarPorQualidade();
+        } else if (item.dataset.acao === 'resolucao') {
+            const filtro4k = document.querySelector('[data-filtro="4K"]');
+            if (filtro4k) {
+                filtro4k.click();
+            }
+        } else if (item.dataset.acao === 'realce') {
+            galleryGrid.querySelectorAll('img').forEach(img => {
+                img.classList.toggle('ia-realce');
+            });
+        }
         menuIaGaleria.classList.add('hidden');
     });
 });
 
-// Filtros de qualidade e banner: mostra só as fotos com o(s) selo(s) informado(s)
+// Filtros Qualidade
 function filtrarPorQualidade(qualidades) {
     document.querySelectorAll('#gallery-grid > div').forEach(item => {
-        const selo = item.querySelector('div')?.textContent.trim();
-        item.style.display = (!qualidades || qualidades.includes(selo)) ? '' : 'none';
+        const divSelo = item.querySelector('div');
+        let selo = '';
+        if (divSelo) {
+            selo = divSelo.textContent.trim();
+        }
+        
+        if (!qualidades || qualidades.includes(selo)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
     });
 }
-// Destaca em roxo só o card de qualidade clicado, e desmarca os outros
-const CLASSES_FILTRO_ATIVO = ['bg-[#25103f]', 'border-purple-500/50'];
-const CLASSES_FILTRO_INATIVO = ['bg-[#130722]', 'border-white/10'];
+
 document.querySelectorAll('.filtro-qualidade').forEach(pill => {
     pill.addEventListener('click', () => {
-        document.querySelectorAll('.filtro-qualidade').forEach(p => {
-            p.classList.remove(...CLASSES_FILTRO_ATIVO);
-            p.classList.add(...CLASSES_FILTRO_INATIVO);
+        document.querySelectorAll('.filtro-qualidade').forEach(p => { 
+            p.classList.remove('bg-[#25103f]', 'border-purple-500/50'); 
+            p.classList.add('bg-[#130722]', 'border-white/10'); 
         });
-        pill.classList.remove(...CLASSES_FILTRO_INATIVO);
-        pill.classList.add(...CLASSES_FILTRO_ATIVO);
-        filtrarPorQualidade(pill.dataset.filtro ? [pill.dataset.filtro] : null);
+        
+        pill.classList.remove('bg-[#130722]', 'border-white/10');
+        pill.classList.add('bg-[#25103f]', 'border-purple-500/50');
+        
+        if (pill.dataset.filtro) {
+            filtrarPorQualidade([pill.dataset.filtro]);
+        } else {
+            filtrarPorQualidade(null);
+        }
     });
 });
-bannerAltaQualidade.addEventListener('click', () => filtrarPorQualidade(['4K', '8K']));
 
-// Buscar: leva o foco direto pro campo de busca
-navBuscar.addEventListener('click', () => inputBusca.focus());
+document.getElementById('nav-albuns').addEventListener('click', () => {
+    filtrarPorQualidade(null);
+});
 
-// Favoritos: mostra só as fotos favoritadas (coração no visualizador); clicar de novo mostra todas
-let mostrandoFavoritos = false;
-navFavoritos.addEventListener('click', () => {
-    mostrandoFavoritos = !mostrandoFavoritos;
-    navFavoritos.classList.toggle('text-pink-500', mostrandoFavoritos);
+document.getElementById('banner-alta-qualidade').addEventListener('click', () => {
+    filtrarPorQualidade(['4K', '8K']);
+});
+
+document.getElementById('nav-buscar').addEventListener('click', () => {
+    document.getElementById('input-busca').focus();
+});
+
+// Favoritos
+let favAtivo = false;
+const navFav = document.getElementById('nav-favoritos');
+
+navFav.addEventListener('click', () => {
+    favAtivo = !favAtivo;
+    
+    if (favAtivo) {
+        navFav.classList.add('text-pink-500');
+    } else {
+        navFav.classList.remove('text-pink-500');
+    }
+    
     document.querySelectorAll('#gallery-grid > div').forEach(item => {
-        item.style.display = (!mostrandoFavoritos || item.classList.contains('favorito')) ? '' : 'none';
+        if (!favAtivo || item.classList.contains('favorito')) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
     });
 });
-

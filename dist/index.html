@@ -9,7 +9,7 @@
 
     <link href="./css/styles.css" rel="stylesheet">
 
-    <!-- Biblioteca de Ícones (Phosphor Icons) IMPORTADA NOVAMENTE -->
+    <!-- Biblioteca de Ícones (Phosphor Icons) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- Estilo extra para esconder a barra de rolagem horizontal -->
@@ -29,7 +29,7 @@
             transition: filter .3s;
         }
 
-        /* Trava o visualizador de foto pra sempre cobrir a tela inteira (evita abrir "no meio" do celular) */
+        /* Trava o visualizador de foto pra sempre cobrir a tela inteira */
         #photo-modal {
             position: fixed !important;
             top: 0 !important;
@@ -44,7 +44,9 @@
 </head>
 
 <body class="bg-black text-white h-[100dvh] w-screen overflow-hidden flex flex-col font-sans select-none">
+    
     <div id="compartilhar-icones" class="flex items-center gap-2"></div>
+    
     <!-- Controles Superiores da Câmera -->
     <div class="flex justify-between items-center px-6 py-2 relative z-50">
 
@@ -66,7 +68,7 @@
 
             <!-- Menu Flutuante ancorado no meio do botão -->
             <div id="ai-menu" class="hidden absolute top-full mt-2 left-1/2 -translate-x-1/2 flex flex-col w-[240px]">
-
+                
                 <!-- Setinha amarela -->
                 <div class="flex justify-center -mb-1 z-10 relative">
                     <div class="bg-black text-yellow-500 rounded-b-xl px-5 py-0.5 text-[10px] font-bold">V</div>
@@ -78,8 +80,7 @@
                     <div class="flex items-center gap-3">
                         <i class="ph ph-gear text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Ajuste
-                                Automático</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Ajuste Automático</span>
                             <span class="text-[10px] text-white/80 leading-tight">Automático</span>
                         </div>
                     </div>
@@ -92,8 +93,7 @@
                     <div class="flex items-center gap-3">
                         <i class="ph-fill ph-moon text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Cena
-                                Noturna</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Cena Noturna</span>
                             <span class="text-[10px] text-white/80 leading-tight">Pouca Luz</span>
                         </div>
                     </div>
@@ -110,9 +110,9 @@
                             <span class="text-[10px] text-white/80 leading-tight">200MP</span>
                         </div>
                     </div>
-                    <div
-                        class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
-                        <i class="ph-bold ph-check text-[10px]"></i></div>
+                    <div class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
+                        <i class="ph-bold ph-check text-[10px]"></i>
+                    </div>
                 </div>
 
                 <!-- Item 4 -->
@@ -125,9 +125,9 @@
                             <span class="text-[10px] text-white/80 leading-tight">+65%</span>
                         </div>
                     </div>
-                    <div
-                        class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
-                        <i class="ph-bold ph-check text-[10px]"></i></div>
+                    <div class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
+                        <i class="ph-bold ph-check text-[10px]"></i>
+                    </div>
                 </div>
 
                 <!-- Item 5 -->
@@ -136,14 +136,13 @@
                     <div class="flex items-center gap-3">
                         <i class="ph ph-circles-four text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque
-                                Autom.</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque Autom.</span>
                             <span class="text-[10px] text-white/80 leading-tight">Desfocar</span>
                         </div>
                     </div>
-                    <div
-                        class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
-                        <i class="ph-bold ph-check text-[10px]"></i></div>
+                    <div class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
+                        <i class="ph-bold ph-check text-[10px]"></i>
+                    </div>
                 </div>
 
                 <!-- Item 6 -->
@@ -152,8 +151,7 @@
                     <div class="flex items-center gap-3">
                         <i class="ph ph-funnel text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros
-                                IA</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros IA</span>
                             <span class="text-[10px] text-white/80 leading-tight">Desligado</span>
                         </div>
                     </div>
@@ -163,56 +161,33 @@
         </div>
         <!-- Fim do Wrapper Botão+Menu -->
 
-        <div id="btn-aspecto"
-            class="border border-white/50 px-3 py-0.5 rounded-full text-xs font-semibold tracking-wider cursor-pointer active:scale-90 transition-transform">
+        <div id="btn-aspecto" class="border border-white/50 px-3 py-0.5 rounded-full text-xs font-semibold tracking-wider cursor-pointer active:scale-90 transition-transform">
             4:5
         </div>
 
         <div class="relative">
-            <img id="btn-timer" src="./images/botao_timer.png"
-                style="width: 40px; height: 40px; object-fit: contain; flex-shrink: 0;"
-                class="cursor-pointer active:scale-90 transition-transform" alt="icone de timer">
-            <span id="timer-badge"
-                class="hidden absolute -bottom-1 -right-1 text-[9px] font-bold bg-yellow-400 text-black rounded-full w-4 h-4 flex items-center justify-center leading-none"></span>
+            <img id="btn-timer" src="./images/botao_timer.png" style="width: 40px; height: 40px; object-fit: contain; flex-shrink: 0;" class="cursor-pointer active:scale-90 transition-transform" alt="icone de timer">
+            <span id="timer-badge" class="hidden absolute -bottom-1 -right-1 text-[9px] font-bold bg-yellow-400 text-black rounded-full w-4 h-4 flex items-center justify-center leading-none"></span>
         </div>
 
         <div class="relative">
-            <img id="btn-config" src="./images/botao_config.png"
-                style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;"
-                class="cursor-pointer active:scale-90 transition-transform" alt="icone de configuração">
-
-            <!-- Painel de Configurações -->
-            <div id="menu-config"
-                class="hidden absolute top-full mt-2 right-0 w-48 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
-                <div id="btn-grade"
-                    class="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer">
-                    <span>Linhas de Grade</span>
-                    <div class="check-indicator w-[16px] h-[16px] rounded-full border-[1.5px] border-yellow-400"></div>
-                </div>
-            </div>
-        </div>
+            <img id="btn-config" src="./images/botao_config.png" style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" class="cursor-pointer active:scale-90 transition-transform" alt="icone de configuração">
+        </div>  
     </div>
 
     <!-- Viewfinder (Área do vídeo/foto) -->
-    <div id="viewfinder"
-        class="relative flex-grow bg-gray-900 mt-2 mx-1 rounded-sm overflow-hidden flex items-center justify-center">
+    <div id="viewfinder" class="relative flex-grow bg-gray-900 mt-2 mx-1 rounded-sm overflow-hidden flex items-center justify-center">
 
         <!-- Elemento de Vídeo da WebCam -->
         <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
 
-        <!-- Grade de enquadramento (ligada/desligada pelo botão de Configurações) -->
-        <div id="grade-overlay" class="hidden absolute inset-0 z-10 pointer-events-none"
-            style="background-image: linear-gradient(to right, rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.5) 1px, transparent 1px); background-size: 33.333% 33.333%;">
-        </div>
+        
 
         <!-- Contagem regressiva do autotimer -->
-        <div id="timer-contagem"
-            class="hidden absolute inset-0 z-20 items-center justify-center text-white text-7xl font-bold bg-black/30">
-        </div>
+        <div id="timer-contagem" class="hidden absolute inset-0 z-20 items-center justify-center text-white text-7xl font-bold bg-black/30"></div>
 
         <!-- Overlay: Zoom 1x -->
-        <div
-            class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold shadow-md border border-white/10 z-10">
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold shadow-md border border-white/10 z-10">
             1x
         </div>
     </div>
@@ -222,9 +197,7 @@
         <ul class="flex overflow-x-auto no-scrollbar gap-6 px-1/2 justify-center text-[13px] items-center">
             <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Noite</li>
             <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Retrato</li>
-            <li
-                class="modo-camera bg-gray-800/80 text-pink-600 rounded-full px-5 py-1.5 font-semibold whitespace-nowrap cursor-pointer">
-                Foto</li>
+            <li class="modo-camera bg-gray-800/80 text-pink-600 rounded-full px-5 py-1.5 font-semibold whitespace-nowrap cursor-pointer">Foto</li>
             <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Video</li>
             <li class="modo-camera text-gray-400 whitespace-nowrap cursor-pointer">Microfilme</li>
         </ul>
@@ -233,28 +206,23 @@
     <!-- Controles Inferiores -->
     <div class="flex justify-between items-center px-8 pb-6 pt-2">
         <!-- Thumbnail (Galeria) -->
-        <div id="btn-open-gallery"
-            class="w-12 h-12 rounded-lg overflow-hidden border border-white/20 bg-gray-800 cursor-pointer active:scale-95 transition-transform z-10">
-            <img id="thumbnail-img" src="./images/golden_beach.png" class="w-full h-full object-cover"
-                alt="Última foto tirada">
+        <div id="btn-open-gallery" class="w-12 h-12 rounded-lg overflow-hidden border border-white/20 bg-gray-800 cursor-pointer active:scale-95 transition-transform z-10">
+            <img id="thumbnail-img" src="./images/golden_beach.png" class="w-full h-full object-cover" alt="Última foto tirada">
         </div>
 
         <!-- Botão Obturador -->
         <div class="w-20 h-20 rounded-full border-[3px] border-white flex items-center justify-center p-1">
-            <button id="shutter"
-                class="w-full h-full bg-white rounded-full active:scale-90 transition-transform cursor-pointer shadow-inner"></button>
+            <button id="shutter" class="w-full h-full bg-white rounded-full active:scale-90 transition-transform cursor-pointer shadow-inner"></button>
         </div>
 
         <!-- Inverter Câmera -->
-        <button id="switch-camera"
-            class="w-12 h-12 bg-[#1c1c1c] rounded-full flex items-center justify-center active:bg-gray-700 transition-colors cursor-pointer">
+        <button id="switch-camera" class="w-12 h-12 bg-[#1c1c1c] rounded-full flex items-center justify-center active:bg-gray-700 transition-colors cursor-pointer">
             <i class="ph ph-arrows-clockwise text-2xl text-white"></i>
         </button>
     </div>
 
     <!-- ================= INÍCIO DA GALERIA INTELIGENTE (OVERLAY) ================= -->
-    <div id="gallery-view"
-        class="fixed inset-0 bg-[#05030a] z-[100] hidden flex-col font-sans text-white h-[100dvh] w-screen overflow-hidden">
+    <div id="gallery-view" class="fixed inset-0 bg-[#05030a] z-[100] hidden flex-col font-sans text-white h-[100dvh] w-screen overflow-hidden">
 
         <!-- Área Rolável -->
         <div class="flex-grow overflow-y-auto pb-28 px-5 no-scrollbar">
@@ -266,51 +234,38 @@
                         <i id="menu-toggle" class="ph ph-list text-2xl cursor-pointer active:scale-90 transition-transform"></i>
 
                         <!-- Menu lateral: para onde dá pra ir dentro da galeria -->
-                        <div id="menu-lateral"
-                            class="hidden absolute top-full mt-2 left-0 w-44 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
-                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
-                                data-alvo="btn-close-gallery">
+                        <div id="menu-lateral" class="hidden absolute top-full mt-2 left-0 w-44 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform" data-alvo="btn-close-gallery">
                                 <i class="ph ph-camera"></i> Câmera
                             </div>
-                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
-                                data-alvo="nav-buscar">
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform" data-alvo="nav-buscar">
                                 <i class="ph ph-magnifying-glass"></i> Buscar
                             </div>
-                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
-                                data-alvo="nav-sugestoes">
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform" data-alvo="nav-sugestoes">
                                 <i class="ph-fill ph-sparkle"></i> Sugestões IA
                             </div>
-                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
-                                data-alvo="nav-favoritos">
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform" data-alvo="nav-favoritos">
                                 <i class="ph ph-heart"></i> Favoritos
                             </div>
-                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform"
-                                data-alvo="nav-albuns">
+                            <div class="menu-item flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer active:scale-90 transition-transform" data-alvo="nav-albuns">
                                 <i class="ph ph-images"></i> Álbuns
                             </div>
                         </div>
                     </div>
-                    <h1 class="text-lg font-semibold tracking-wide">Galeria <span
-                            class="text-purple-500">Inteligente</span></h1>
+                    <h1 class="text-lg font-semibold tracking-wide">Galeria <span class="text-purple-500">Inteligente</span></h1>
                 </div>
                 <div class="relative">
-                    <img src="./images/botao_ia.png" id="btn-organizar-ia"
-                        style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0;"
-                        class="p-1.5 rounded-lg cursor-pointer active:scale-90 transition-transform">
+                    <img src="./images/botao_ia.png" id="btn-organizar-ia" style="width: 50px; height: 50px; object-fit: contain; flex-shrink: 0;" class="p-1.5 rounded-lg cursor-pointer active:scale-90 transition-transform">
 
                     <!-- Painel de sugestões da IA para as fotos/vídeos -->
-                    <div id="menu-ia-galeria"
-                        class="hidden absolute top-full mt-2 right-0 w-56 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
-                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
-                            data-acao="organizar">
+                    <div id="menu-ia-galeria" class="hidden absolute top-full mt-2 right-0 w-56 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
+                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer" data-acao="organizar">
                             <i class="ph-fill ph-sparkle text-purple-400"></i> Organizar Melhores Fotos
                         </div>
-                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
-                            data-acao="resolucao">
+                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer" data-acao="resolucao">
                             <i class="ph ph-image text-purple-400"></i> Sugerir Melhor Resolução
                         </div>
-                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
-                            data-acao="realce">
+                        <div class="ia-acao flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer" data-acao="realce">
                             <i class="ph ph-sun text-purple-400"></i> Melhorar Luz e Nitidez
                         </div>
                     </div>
@@ -318,53 +273,43 @@
             </div>
 
             <!-- Barra de Busca -->
-            <div
-                class="flex items-center bg-[#130722] border border-purple-800/50 rounded-full px-4 py-2.5 mb-6 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+            <div class="flex items-center bg-[#130722] border border-purple-800/50 rounded-full px-4 py-2.5 mb-6 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
                 <i class="ph ph-magnifying-glass text-gray-400 text-lg mr-3"></i>
-                <input id="input-busca" type="text" placeholder="Buscar fotos com IA..."
-                    class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-500">
+                <input id="input-busca" type="text" placeholder="Buscar fotos com IA..." class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-500">
                 <i class="ph-fill ph-sparkle text-purple-500 text-lg ml-3"></i>
             </div>
 
             <!-- Filtros Horizontais -->
             <div class="flex overflow-x-auto no-scrollbar gap-3 mb-6 pb-2">
-                <div data-filtro=""
-                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#25103f] border border-purple-500/50 rounded-xl min-w-[80px] h-[60px] cursor-pointer">
+                <div data-filtro="" class="filtro-qualidade flex flex-col items-center justify-center bg-[#25103f] border border-purple-500/50 rounded-xl min-w-[80px] h-[60px] cursor-pointer">
                     <i class="ph ph-squares-four text-purple-400 text-xl mb-1"></i>
                     <span class="text-[11px] font-semibold">Todos</span>
                 </div>
-                <div data-filtro="FHD"
-                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="FHD" class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">Full HD</span>
                     <span class="text-[10px]">1080p</span>
                 </div>
-                <div data-filtro="2K"
-                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="2K" class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">2k</span>
                     <span class="text-[10px]">1440p</span>
                 </div>
-                <div data-filtro="4K"
-                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="4K" class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">4k</span>
                     <span class="text-[10px]">2160p</span>
                 </div>
-                <div data-filtro="8K"
-                    class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
+                <div data-filtro="8K" class="filtro-qualidade flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-xl min-w-[80px] h-[60px] cursor-pointer text-gray-400 hover:text-white transition-colors">
                     <span class="text-[12px] font-bold text-white">8k</span>
                     <span class="text-[10px]">4320p</span>
                 </div>
             </div>
 
             <!-- Banner Organizador IA -->
-            <div id="banner-organizar-ia"
-                class="flex justify-between items-center bg-[#130722] border border-white/10 rounded-2xl p-4 mb-6 cursor-pointer">
+            <div id="banner-organizar-ia" class="flex justify-between items-center bg-[#130722] border border-white/10 rounded-2xl p-4 mb-6 cursor-pointer">
                 <div class="flex flex-col">
                     <span class="text-[11px] font-bold tracking-wider">IA ORGANIZOU 586 FOTOS</span>
                     <span class="text-[10px] text-gray-400">Separado por Qualidade</span>
                 </div>
-                <button
-                    class="bg-[#25103f] text-[11px] font-semibold px-4 py-1.5 rounded-full border border-purple-800/50">Saiba
-                    mais</button>
+                <button class="bg-[#25103f] text-[11px] font-semibold px-4 py-1.5 rounded-full border border-purple-800/50">Saiba mais</button>
             </div>
 
             <!-- Seção: Melhores Fotos -->
@@ -374,85 +319,66 @@
                 <span class="text-white flex items-center cursor-pointer">Ver Todas <i class="ph ph-caret-right ml-1 text-sm"></i></span>
             </div>
 
-            <!-- Grid de Fotos (Agora com 9 fotos) -->
+            <!-- Grid de Fotos -->
             <div id="gallery-grid" class="grid grid-cols-3 gap-2 mb-6">
                 <!-- Foto 1 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/golden_beach.png" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        8K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">8K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 2 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/bolsa.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        8K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">8K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 3 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/campo_floress.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        4K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">4K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 4 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/noite_brilhante.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        4K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">4K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 5 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/nissan_r32modified.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        4K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">4K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
                 <!-- Foto 6 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/nissan_r32.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        2K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">2K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
-                <!-- Foto 7 (Nova) -->
+                <!-- Foto 7 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/golf_r32.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        4K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">4K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
-                <!-- Foto 8 (Nova) -->
+                <!-- Foto 8 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/nissan_r32modified.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        2K</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">2K</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
-                <!-- Foto 9 (Nova) -->
+                <!-- Foto 9 -->
                 <div class="aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer">
                     <img src="./images/nissan_r32modified.jpg" class="w-full h-full object-cover" alt="Foto">
-                    <div
-                        class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">
-                        FHD</div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-white/10 backdrop-blur-md">FHD</div>
                     <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>
                 </div>
             </div>
 
             <!-- Banner Fim -->
-            <div id="banner-alta-qualidade"
-                class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-2xl p-5 mb-4 text-center cursor-pointer">
+            <div id="banner-alta-qualidade" class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-2xl p-5 mb-4 text-center cursor-pointer">
                 <span class="text-[11px] font-bold tracking-wider mb-1">FOTOS DE ALTA QUALIDADE</span>
                 <span class="text-[10px] text-gray-400">1.230 fotos em 4K ou superior</span>
             </div>
@@ -464,38 +390,33 @@
             <div class="grid grid-cols-5 items-end px-2">
 
                 <!-- Botão Câmera (Fecha a Galeria) -->
-                <div id="btn-close-gallery"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
+                <div id="btn-close-gallery" class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-camera text-[22px]"></i>
                     <span class="text-[9px]">Câmera</span>
                 </div>
 
                 <!-- Botão Buscar -->
-                <div id="nav-buscar"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
+                <div id="nav-buscar" class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-magnifying-glass text-[22px]"></i>
                     <span class="text-[9px]">Buscar</span>
                 </div>
 
                 <!-- Botão Central Sugestões IA -->
                 <div id="nav-sugestoes" class="flex flex-col items-center justify-end cursor-pointer relative">
-                    <div
-                        class="absolute -top-11 bg-[#1a0b26] border border-purple-500/30 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.3)] cursor-pointer active:scale-90 transition-transform">
+                    <div class="absolute -top-11 bg-[#1a0b26] border border-purple-500/30 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.3)] cursor-pointer active:scale-90 transition-transform">
                         <i class="ph-fill ph-sparkle text-white text-[26px]"></i>
                     </div>
                     <span class="text-[9px] text-gray-300 mt-7 pb-1">Sugestões IA</span>
                 </div>
 
                 <!-- Botão Favoritos -->
-                <div id="nav-favoritos"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
+                <div id="nav-favoritos" class="flex flex-col items-center justify-end gap-1 cursor-pointer text-gray-500 hover:text-white transition-colors pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-heart text-[22px]"></i>
                     <span class="text-[9px]">Favoritos</span>
                 </div>
 
                 <!-- Botão Álbuns -->
-                <div id="nav-albuns"
-                    class="flex flex-col items-center justify-end gap-1 cursor-pointer text-purple-400 pb-1 active:scale-90 transition-transform">
+                <div id="nav-albuns" class="flex flex-col items-center justify-end gap-1 cursor-pointer text-purple-400 pb-1 active:scale-90 transition-transform">
                     <i class="ph ph-images text-[22px]"></i>
                     <span class="text-[9px]">Álbuns</span>
                 </div>
@@ -513,25 +434,19 @@
         <div id="photo-modal" class="fixed inset-0 bg-black z-[200] hidden flex-col justify-center items-center">
 
             <!-- Barra superior do visualizador -->
-            <div
-                class="absolute top-0 w-full pt-8 pb-4 px-6 flex justify-between items-center z-10 bg-gradient-to-b from-black/80 to-transparent">
-                <i id="btn-close-modal"
-                    class="ph ph-caret-left text-3xl text-white cursor-pointer active:text-gray-400"></i>
+            <div class="absolute top-0 w-full pt-8 pb-4 px-6 flex justify-between items-center z-10 bg-gradient-to-b from-black/80 to-transparent">
+                <i id="btn-close-modal" class="ph ph-caret-left text-3xl text-white cursor-pointer active:text-gray-400"></i>
                 <span class="text-white font-semibold tracking-wide text-sm">Visualizar</span>
                 <div class="flex items-center gap-4 relative">
-                    <i id="btn-ia-foto"
-                        class="ph-fill ph-sparkle text-2xl text-white cursor-pointer active:text-gray-400"></i>
+                    <i id="btn-ia-foto" class="ph-fill ph-sparkle text-2xl text-white cursor-pointer active:text-gray-400"></i>
                     <i class="ph ph-dots-three-vertical text-3xl text-white cursor-pointer active:text-gray-400"></i>
 
                     <!-- Painel de IA para a foto aberta -->
-                    <div id="menu-ia-foto"
-                        class="hidden absolute top-full mt-2 right-0 w-56 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
-                        <div class="ia-acao-foto flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
-                            data-acao="resolucao">
+                    <div id="menu-ia-foto" class="hidden absolute top-full mt-2 right-0 w-56 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
+                        <div class="ia-acao-foto flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer" data-acao="resolucao">
                             <i class="ph ph-image text-purple-400"></i> Sugerir Melhor Resolução
                         </div>
-                        <div class="ia-acao-foto flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer"
-                            data-acao="realce">
+                        <div class="ia-acao-foto flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer" data-acao="realce">
                             <i class="ph ph-sun text-purple-400"></i> Melhorar Luz e Nitidez
                         </div>
                     </div>
@@ -539,13 +454,10 @@
             </div>
 
             <!-- A Imagem Grande Central -->
-            <img id="modal-image" src=""
-                class="w-full h-auto max-h-[85dvh] object-contain transition-transform duration-300"
-                alt="Foto Ampliada">
+            <img id="modal-image" src="" class="w-full h-auto max-h-[85dvh] object-contain transition-transform duration-300" alt="Foto Ampliada">
 
             <!-- Barra de Ações Inferior -->
-            <div
-                class="absolute bottom-0 w-full pb-8 pt-4 px-8 flex justify-between items-center z-10 bg-gradient-to-t from-black/80 to-transparent">
+            <div class="absolute bottom-0 w-full pb-8 pt-4 px-8 flex justify-between items-center z-10 bg-gradient-to-t from-black/80 to-transparent">
                 <i class="ph ph-export text-2xl text-white cursor-pointer active:text-gray-400"></i>
                 <i id="btn-favoritar-foto" class="ph ph-heart text-2xl text-white cursor-pointer active:text-gray-400"></i>
                 <i id="btn-excluir-foto" class="ph ph-trash text-2xl text-white cursor-pointer active:text-gray-400"></i>
