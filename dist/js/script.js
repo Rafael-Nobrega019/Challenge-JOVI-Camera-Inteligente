@@ -131,20 +131,20 @@ const modalImage = document.getElementById('modal-image');
 const btnFavoritarFoto = document.getElementById('btn-favoritar-foto');
 
 let fotoAtualElemento = null;
+let lixeiraAtiva = false; // Controla se estamos na aba da lixeira
 
 function abrirFotoEmTelaCheia(src, elemento) {
     modalImage.src = src;
+    fotoAtualElemento = elemento || null;
     
-    if (elemento) {
-        fotoAtualElemento = elemento;
-    } else {
-        fotoAtualElemento = null;
-    }
+    // Verifica se a foto está na lixeira
+    const naLixeira = fotoAtualElemento && fotoAtualElemento.dataset.status === 'lixeira';
     
-    let favoritada = false;
-    if (fotoAtualElemento && fotoAtualElemento.classList.contains('favorito')) {
-        favoritada = true;
-    }
+    // Mostra/esconde botões baseados em onde a foto está
+    document.querySelectorAll('.acao-normal').forEach(el => el.classList.toggle('hidden', naLixeira));
+    document.querySelectorAll('.acao-lixeira').forEach(el => el.classList.toggle('hidden', !naLixeira));
+    
+    let favoritada = fotoAtualElemento && fotoAtualElemento.classList.contains('favorito');
     
     if (favoritada) {
         btnFavoritarFoto.classList.add('ph-fill', 'text-pink-500');
@@ -159,7 +159,6 @@ function abrirFotoEmTelaCheia(src, elemento) {
 
 btnFavoritarFoto.addEventListener('click', () => {
     if (!fotoAtualElemento) return;
-    
     const favoritada = fotoAtualElemento.classList.toggle('favorito');
     
     if (favoritada) {
@@ -171,12 +170,35 @@ btnFavoritarFoto.addEventListener('click', () => {
     }
 });
 
+// MANDAR PARA A LIXEIRA (Botão de lixo normal)
 document.getElementById('btn-excluir-foto').addEventListener('click', () => {
     if (fotoAtualElemento) {
-        fotoAtualElemento.remove();
-        fotoAtualElemento = null;
+        fotoAtualElemento.dataset.status = 'lixeira'; // Marca a foto como "na lixeira"
+        fotoAtualElemento.style.display = 'none';      // Esconde da galeria atual
+        fotoAtualElemento.classList.remove('favorito'); // Tira dos favoritos
     }
     document.getElementById('btn-close-modal').click();
+});
+
+// RESTAURAR DA LIXEIRA
+document.getElementById('btn-restaurar-foto').addEventListener('click', () => {
+    if (fotoAtualElemento) {
+        delete fotoAtualElemento.dataset.status; // Tira a marcação de lixeira
+        // Como estamos na visualização da lixeira, esconder ela da tela atual
+        if (lixeiraAtiva) fotoAtualElemento.style.display = 'none'; 
+    }
+    document.getElementById('btn-close-modal').click();
+});
+
+// DELETAR PERMANENTEMENTE
+document.getElementById('btn-excluir-permanente').addEventListener('click', () => {
+    // Alerta nativo para confirmar exclusão
+    const certeza = confirm("Tem certeza que deseja excluir esta foto permanentemente? Isso não pode ser desfeito.");
+    if (certeza && fotoAtualElemento) {
+        fotoAtualElemento.remove(); // Apaga do HTML de vez
+        fotoAtualElemento = null;
+        document.getElementById('btn-close-modal').click();
+    }
 });
 
 document.getElementById('btn-close-modal').addEventListener('click', () => {
@@ -184,9 +206,7 @@ document.getElementById('btn-close-modal').addEventListener('click', () => {
     modalImage.classList.remove('ia-realce');
     
     const badgeReq = document.getElementById('badge-resolucao');
-    if (badgeReq) {
-        badgeReq.remove();
-    }
+    if (badgeReq) badgeReq.remove();
 });
 
 // IA da Foto Aberta
@@ -390,12 +410,15 @@ function organizarPorQualidade() {
 }
 
 document.getElementById('banner-organizar-ia').addEventListener('click', organizarPorQualidade);
-document.getElementById('nav-sugestoes').addEventListener('click', organizarPorQualidade);
 
 const menuIaGaleria = document.getElementById('menu-ia-galeria');
-document.getElementById('btn-organizar-ia').addEventListener('click', () => {
+
+function toggleMenuIa() {
     menuIaGaleria.classList.toggle('hidden');
-});
+}
+
+document.getElementById('btn-organizar-ia').addEventListener('click', toggleMenuIa);
+document.getElementById('nav-sugestoes').addEventListener('click', toggleMenuIa);
 
 document.querySelectorAll('#menu-ia-galeria .ia-acao').forEach(item => {
     item.addEventListener('click', () => {
@@ -415,14 +438,22 @@ document.querySelectorAll('#menu-ia-galeria .ia-acao').forEach(item => {
     });
 });
 
-// Filtros Qualidade
+// ==========================================
+// 6. FILTROS QUALIDADE, LIXEIRA E FAVORITOS
+// ==========================================
 function filtrarPorQualidade(qualidades) {
+    lixeiraAtiva = false; // Sai do modo lixeira
+    document.getElementById('titulo-galeria').innerHTML = `Galeria <span class="text-purple-500">Inteligente</span>`;
+    
     document.querySelectorAll('#gallery-grid > div').forEach(item => {
-        const divSelo = item.querySelector('div');
-        let selo = '';
-        if (divSelo) {
-            selo = divSelo.textContent.trim();
+        // Se a foto tá na lixeira, esconde ela da galeria normal não importa o filtro
+        if (item.dataset.status === 'lixeira') {
+            item.style.display = 'none';
+            return;
         }
+
+        const divSelo = item.querySelector('div');
+        let selo = divSelo ? divSelo.textContent.trim() : '';
         
         if (!qualidades || qualidades.includes(selo)) {
             item.style.display = '';
@@ -432,6 +463,7 @@ function filtrarPorQualidade(qualidades) {
     });
 }
 
+// Botões redondinhos de Filtro lá no topo (Todos, FHD, 2k, 4k, 8k)
 document.querySelectorAll('.filtro-qualidade').forEach(pill => {
     pill.addEventListener('click', () => {
         document.querySelectorAll('.filtro-qualidade').forEach(p => { 
@@ -450,23 +482,52 @@ document.querySelectorAll('.filtro-qualidade').forEach(pill => {
     });
 });
 
+// Voltar pros Álbuns normais
 document.getElementById('nav-albuns').addEventListener('click', () => {
     filtrarPorQualidade(null);
 });
 
+// Banner de Alta Qualidade
 document.getElementById('banner-alta-qualidade').addEventListener('click', () => {
     filtrarPorQualidade(['4K', '8K']);
 });
 
+// Campo de Buscar
 document.getElementById('nav-buscar').addEventListener('click', () => {
     document.getElementById('input-busca').focus();
 });
+
+
+// === LÓGICA DA ABA LIXEIRA ===
+document.getElementById('menu-item-lixeira').addEventListener('click', () => {
+    menuLateral.classList.add('hidden');
+    lixeiraAtiva = true;
+    favAtivo = false; // Desliga filtro de favoritos se estiver ligado
+    document.getElementById('nav-favoritos').classList.remove('text-pink-500');
+    
+    // Muda o título
+    document.getElementById('titulo-galeria').innerHTML = `Lixeira <span class="text-red-500">Excluídos</span>`;
+    
+    // Filtra o Grid pra mostrar SÓ a lixeira
+    document.querySelectorAll('#gallery-grid > div').forEach(item => {
+        if (item.dataset.status === 'lixeira') {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+// =============================
+
 
 // Favoritos
 let favAtivo = false;
 const navFav = document.getElementById('nav-favoritos');
 
 navFav.addEventListener('click', () => {
+    lixeiraAtiva = false; // Sai do modo lixeira
+    document.getElementById('titulo-galeria').innerHTML = `Galeria <span class="text-purple-500">Inteligente</span>`;
+    
     favAtivo = !favAtivo;
     
     if (favAtivo) {
@@ -476,10 +537,63 @@ navFav.addEventListener('click', () => {
     }
     
     document.querySelectorAll('#gallery-grid > div').forEach(item => {
+        // Proteção: não mostra fotos da lixeira nos favoritos
+        if (item.dataset.status === 'lixeira') {
+            item.style.display = 'none';
+            return;
+        }
+        
         if (!favAtivo || item.classList.contains('favorito')) {
             item.style.display = '';
         } else {
             item.style.display = 'none';
         }
     });
+});// ==========================================
+// COMPARTILHAMENTO DE FOTO
+// ==========================================
+const shareModal = document.getElementById('share-modal');
+const btnCloseShare = document.getElementById('btn-close-share');
+
+// Supondo que o seu botão de compartilhar na tela de visualização tenha um ID como 'btn-share'
+// (Caso seu botão tenha outra classe ou ID, ajuste o seletor abaixo)
+const btnShare = document.getElementById('btn-share'); 
+
+if (btnShare) {
+    btnShare.addEventListener('click', () => {
+        shareModal.classList.replace('hidden', 'flex');
+    });
+}
+
+btnCloseShare.addEventListener('click', () => {
+    shareModal.classList.replace('flex', 'hidden');
 });
+
+// Fechar ao clicar fora do conteúdo do modal
+shareModal.addEventListener('click', (e) => {
+    if (e.target === shareModal) {
+        shareModal.classList.replace('flex', 'hidden');
+    }
+});
+
+// Função para simular ou executar a ação de compartilhamento
+function compartilharRede(tipo) {
+    const imagemAtualSrc = modalImage.src;
+
+    if (tipo === 'copiar') {
+        navigator.clipboard.writeText(imagemAtualSrc).then(() => {
+            alert('Imagem copiada para a área de transferência!');
+        }).catch(err => {
+            console.error('Erro ao copiar: ', err);
+        });
+    } else if (tipo === 'whatsapp') {
+        const urlWp = `https://api.whatsapp.com/send?text=Olha%20que%20foto%20incrível%20que%20eu%20tirei!%20${encodeURIComponent(imagemAtualSrc)}`;
+        window.open(urlWp, '_blank');
+    } else if (tipo === 'mais') {
+        alert('Abrindo mais opções de compartilhamento!');
+    } else {
+        alert(`Compartilhando via ${tipo}`);
+    }
+
+    shareModal.classList.replace('flex', 'hidden');
+}
