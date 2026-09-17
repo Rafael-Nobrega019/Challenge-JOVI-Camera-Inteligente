@@ -133,26 +133,31 @@ const btnFavoritarFoto = document.getElementById('btn-favoritar-foto');
 let fotoAtualElemento = null;
 let lixeiraAtiva = false; // Controla se estamos na aba da lixeira
 
-function abrirFotoEmTelaCheia(src, elemento) {
-    modalImage.src = src;
+const modalVideo = document.getElementById('modal-video');
+
+function abrirFotoEmTelaCheia(src, elemento, tipoArquivo = 'foto') {
     fotoAtualElemento = elemento || null;
     
-    // Verifica se a foto está na lixeira
+    // Esconde a foto se for vídeo, esconde o vídeo se for foto
+    if (tipoArquivo === 'video' || (elemento && elemento.innerHTML.includes('<video'))) {
+        modalImage.classList.add('hidden');
+        modalVideo.classList.remove('hidden');
+        modalVideo.src = src;
+        modalVideo.play(); // Da play automático
+    } else {
+        modalVideo.classList.add('hidden');
+        modalImage.classList.remove('hidden');
+        modalImage.src = src;
+        modalVideo.pause(); 
+    }
+    
+    // ... restante da função igual (Verifica lixeira, mostra botões, etc)
     const naLixeira = fotoAtualElemento && fotoAtualElemento.dataset.status === 'lixeira';
     
-    // Mostra/esconde botões baseados em onde a foto está
     document.querySelectorAll('.acao-normal').forEach(el => el.classList.toggle('hidden', naLixeira));
     document.querySelectorAll('.acao-lixeira').forEach(el => el.classList.toggle('hidden', !naLixeira));
     
-    let favoritada = fotoAtualElemento && fotoAtualElemento.classList.contains('favorito');
-    
-    if (favoritada) {
-        btnFavoritarFoto.classList.add('ph-fill', 'text-pink-500');
-        btnFavoritarFoto.classList.remove('ph');
-    } else {
-        btnFavoritarFoto.classList.remove('ph-fill', 'text-pink-500');
-        btnFavoritarFoto.classList.add('ph');
-    }
+    // ... (o resto pode manter igualzinho o que já estava aí)
     
     photoModal.classList.replace('hidden', 'flex');
 }
@@ -239,38 +244,52 @@ document.querySelectorAll('#gallery-grid > div').forEach(item => {
 // 4. TIRAR FOTO E AUTOTIMER
 // ==========================================
 function tirarFoto() {
+    // Efeito de Flash (piscar branco)
     if (modoFlash !== 'off') {
         const flash = document.createElement('div');
         flash.className = 'absolute inset-0 bg-white opacity-0 transition-opacity duration-75 z-50';
         document.body.appendChild(flash);
-        
-        setTimeout(() => {
-            flash.classList.remove('opacity-0');
-        }, 10);
-        
+        setTimeout(() => flash.classList.remove('opacity-0'), 10);
         setTimeout(() => { 
             flash.classList.add('opacity-0'); 
-            setTimeout(() => {
-                flash.remove();
-            }, 100); 
+            setTimeout(() => flash.remove(), 100); 
         }, 100);
     }
 
-    if (video.videoWidth) {
-        canvas.width = video.videoWidth;
-    } else {
-        canvas.width = 1080;
+    // 1. Pegar resolução real da lente da câmera
+    const natWidth = video.videoWidth || 1080;
+    const natHeight = video.videoHeight || 1920;
+    const nativeAspect = natWidth / natHeight;
+
+    // 2. Descobrir a matemática da proporção escolhida (ex: 4:5 vira 4/5 = 0.8)
+    const [wRatio, hRatio] = ASPECTOS[indiceAspecto].split(':').map(Number);
+    const targetAspect = wRatio / hRatio;
+
+    let drawWidth = natWidth;
+    let drawHeight = natHeight;
+    let startX = 0;
+    let startY = 0;
+
+    // 3. Fazer o Crop (Corte espacial)
+    if (nativeAspect > targetAspect) {
+        // Câmera é mais larga que o alvo: corta as laterais
+        drawWidth = natHeight * targetAspect;
+        startX = (natWidth - drawWidth) / 2;
+    } else if (nativeAspect < targetAspect) {
+        // Câmera é mais alta que o alvo: corta em cima e embaixo
+        drawHeight = natWidth / targetAspect;
+        startY = (natHeight - drawHeight) / 2;
     }
+
+    // Ajustar o canvas para o tamanho final cortado
+    canvas.width = drawWidth;
+    canvas.height = drawHeight;
     
-    if (video.videoHeight) {
-        canvas.height = video.videoHeight;
-    } else {
-        canvas.height = 1920;
-    }
+    // Desenhar só a parte que interessa no canvas
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, startX, startY, drawWidth, drawHeight, 0, 0, drawWidth, drawHeight);
     
-    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
     const fotoDataUrl = canvas.toDataURL('image/jpeg');
-    
     thumbnailImg.src = fotoDataUrl;
     
     const novaDiv = document.createElement('div');
@@ -278,12 +297,9 @@ function tirarFoto() {
     novaDiv.innerHTML = `
         <img src="${fotoDataUrl}" class="w-full h-full object-cover" alt="Sua Foto">
         <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-purple-600/80 backdrop-blur-md shadow-[0_0_8px_rgba(168,85,247,0.5)]">NOVA</div>
-        <i class="ph-bold ph-dots-three-vertical absolute top-1 right-1 text-white shadow-black drop-shadow-md"></i>`;
+    `;
     
-    novaDiv.addEventListener('click', () => {
-        abrirFotoEmTelaCheia(fotoDataUrl, novaDiv);
-    });
-    
+    novaDiv.addEventListener('click', () => abrirFotoEmTelaCheia(fotoDataUrl, novaDiv, 'foto'));
     galleryGrid.prepend(novaDiv);
 }
 
@@ -308,13 +324,62 @@ btnTimer.addEventListener('click', () => {
     }
 });
 
+let mediaRecorder;
+let recordedChunks = [];
+let isRecording = false;
+
 document.getElementById('shutter').addEventListener('click', () => {
-    let restante = TEMPOS_TIMER[indiceTimer];
-    
-    if (!restante) {
-        tirarFoto();
-        return;
+    // SE ESTIVER NO MODO VÍDEO
+    if (modoAtualCamera === 'Video') {
+        const shutterBtn = document.getElementById('shutter');
+        
+        if (!isRecording) {
+            // Começa a gravar
+            recordedChunks = [];
+            // Tenta usar MP4/WebM se o celular suportar
+            try { mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' }); } 
+            catch(e) { mediaRecorder = new MediaRecorder(stream); }
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) recordedChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const videoUrl = URL.createObjectURL(blob);
+                
+                const novaDiv = document.createElement('div');
+                novaDiv.className = 'aspect-[4/3] relative rounded-md overflow-hidden bg-gray-800 cursor-pointer active:scale-95 transition-transform';
+                novaDiv.innerHTML = `
+                    <video src="${videoUrl}" class="w-full h-full object-cover"></video>
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/30"><i class="ph-fill ph-play-circle text-3xl text-white drop-shadow-lg"></i></div>
+                    <div class="absolute top-1 left-1 border border-white/40 text-white text-[9px] font-bold px-1 rounded-sm bg-red-600/80 backdrop-blur-md shadow-[0_0_8px_rgba(220,38,38,0.5)]">VÍDEO</div>
+                `;
+                novaDiv.addEventListener('click', () => abrirFotoEmTelaCheia(videoUrl, novaDiv, 'video'));
+                galleryGrid.prepend(novaDiv);
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            
+            // Tira o branco e coloca o vermelho piscando (sem encolher)
+            shutterBtn.classList.remove('bg-white');
+            shutterBtn.classList.add('bg-red-600', 'animate-pulse');
+        } else {
+            // Para de gravar
+            mediaRecorder.stop();
+            isRecording = false;
+            
+            // Tira o vermelho piscando e devolve o branco normal
+            shutterBtn.classList.remove('bg-red-600', 'animate-pulse');
+            shutterBtn.classList.add('bg-white');
+        }
+        return; 
     }
+
+    // SE ESTIVER NO MODO FOTO (Lógica do Timer)
+    let restante = TEMPOS_TIMER[indiceTimer];
+    if (!restante) { tirarFoto(); return; }
 
     timerContagem.textContent = restante;
     timerContagem.classList.replace('hidden', 'flex');
@@ -354,6 +419,8 @@ btnAspecto.addEventListener('click', () => {
     }
 });
 
+let modoAtualCamera = 'Foto'; // Variável para sabermos o que o botão central deve fazer
+
 const CLASSES_MODO = ['bg-gray-800/80', 'text-pink-600', 'rounded-full', 'px-5', 'py-1.5', 'font-semibold'];
 document.querySelectorAll('.modo-camera').forEach(modo => {
     modo.addEventListener('click', () => {
@@ -363,6 +430,9 @@ document.querySelectorAll('.modo-camera').forEach(modo => {
         });
         modo.classList.remove('text-gray-400');
         modo.classList.add(...CLASSES_MODO);
+        
+        // Salva o modo que o usuário escolheu
+        modoAtualCamera = modo.textContent.trim();
     });
 });
 
