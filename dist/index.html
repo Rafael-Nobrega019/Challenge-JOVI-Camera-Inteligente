@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- Viewport ajustado para barrar o zoom e simular um app nativo -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Câmera JOVI</title>
 
@@ -12,7 +11,7 @@
     <!-- Biblioteca de Ícones (Phosphor Icons) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <!-- Estilo extra para esconder a barra de rolagem horizontal -->
+    <!-- Esconder a barra de scroll -->
     <style>
         .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -23,13 +22,13 @@
             scrollbar-width: none;
         }
 
-        /* Simula a IA melhorando luz e nitidez da foto/vídeo */
+        /* Simulando a IA melhorando a luz e nitidez da imagem */
         .ia-realce {
             filter: brightness(1.12) contrast(1.12) saturate(1.15);
             transition: filter .3s;
         }
 
-        /* Trava o visualizador de foto pra sempre cobrir a tela inteira */
+        /* Código para deixar a tela fixa */
         #photo-modal {
             position: fixed !important;
             top: 0 !important;
@@ -59,35 +58,34 @@
                 class="absolute -bottom-1 -right-1 text-[8px] font-bold bg-white text-black rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none">A</span>
         </button>
 
-        <!-- WRAPPER DO BOTÃO + MENU DA IA -->
         <div class="relative flex justify-center">
             <!-- Botão IA -->
             <img id="btn-ai" src="./images/botao_ia.png"
                 class="cursor-pointer active:scale-90 transition-transform relative z-10"
                 style="width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;" alt="icone de IA">
 
-            <!-- Menu Flutuante ancorado no botão (CORRIGIDO PARA NÃO CORTAR NO CELULAR) -->
+            <!-- Menu Flutuante -->
             <div id="ai-menu" class="hidden absolute top-full mt-2 -left-8 sm:left-1/2 sm:-translate-x-1/2 flex flex-col w-[240px] max-w-[90vw] z-[120]">
 
-                <!-- Setinha amarela (ajustada para continuar apontando pro botão) -->
+                <!-- Setinha amarela -->
                 <div class="flex justify-start sm:justify-center ml-5 sm:ml-0 -mb-1 z-10 relative">
                     <div class="bg-black text-yellow-500 rounded-b-xl px-5 py-0.5 text-[10px] font-bold">V</div>
                 </div>
 
-                <!-- Item 1 -->
+                <!-- Ajuste Automático -->
                 <div data-ajuste="auto"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-gear text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
                             <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Ajuste Automático</span>
-                            <span class="text-[10px] text-white/80 leading-tight">Automático</span>
+                            <span class="text-[10px] text-white/80 leading-tight">Cores e Contraste</span>
                         </div>
                     </div>
                     <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
                 </div>
 
-                <!-- Item 2 -->
+                <!-- Cena Noturna -->
                 <div data-ajuste="noturna"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
@@ -100,7 +98,7 @@
                     <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
                 </div>
 
-                <!-- Item 3 -->
+                <!-- Resolução -->
                 <div data-ajuste="resolucao"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
@@ -115,7 +113,7 @@
                     </div>
                 </div>
 
-                <!-- Item 4 -->
+                <!-- Nitidez -->
                 <div data-ajuste="nitidez"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
@@ -130,13 +128,13 @@
                     </div>
                 </div>
 
-                <!-- Item 5 -->
+                <!-- Desfoque Automático -->
                 <div data-ajuste="desfoque"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 mb-1.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-circles-four text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque Autom.</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque Automático</span>
                             <span class="text-[10px] text-white/80 leading-tight">Desfocar</span>
                         </div>
                     </div>
@@ -145,21 +143,20 @@
                     </div>
                 </div>
 
-                <!-- Item 6 -->
+                <!-- Filtros IA -->
                 <div data-ajuste="filtro"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-funnel text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
                             <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros IA</span>
-                            <span class="text-[10px] text-white/80 leading-tight">Desligado</span>
+                            <span class="text-[10px] text-white/80 leading-tight">Cores Vivas</span>
                         </div>
                     </div>
                     <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
                 </div>
             </div>
         </div>
-        <!-- Fim do Wrapper Botão+Menu -->
 
         <div id="btn-aspecto" class="border border-white/50 px-3 py-0.5 rounded-full text-xs font-semibold tracking-wider cursor-pointer active:scale-90 transition-transform">
             4:5
@@ -175,16 +172,16 @@
         </div>  
     </div>
 
-    <!-- Viewfinder (Área do vídeo/foto) -->
+    <!-- Área do vídeo/foto :) -->
     <div id="viewfinder" class="relative flex-grow bg-gray-900 mt-2 mx-1 rounded-sm overflow-hidden flex items-center justify-center">
 
-        <!-- Elemento de Vídeo da WebCam -->
+        <!-- Elemento de Vídeo da Câmera :D -->
         <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
 
-        <!-- Contagem regressiva do autotimer -->
+        <!-- Contagem regressiva do timer -->
         <div id="timer-contagem" class="hidden absolute inset-0 z-20 items-center justify-center text-white text-7xl font-bold bg-black/30"></div>
 
-        <!-- Overlay: Zoom 1x -->
+        <!-- Zoom 1x (não é clicável, é apenas para exibição) -->
         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold shadow-md border border-white/10 z-10">
             1x
         </div>
@@ -201,25 +198,25 @@
         </ul>
     </div>
 
-    <!-- Controles Inferiores -->
+    <!-- Sessão de Controles Inferiores da Câmera :) -->
     <div class="flex justify-between items-center px-8 pb-6 pt-2">
-        <!-- Thumbnail (Galeria) -->
+        <!-- Thumbnail (da acesso a galeria pela câmera) -->
         <div id="btn-open-gallery" class="w-12 h-12 rounded-lg overflow-hidden border border-white/20 bg-gray-800 cursor-pointer active:scale-95 transition-transform z-10">
             <img id="thumbnail-img" src="./images/golden_beach.png" class="w-full h-full object-cover" alt="Última foto tirada">
         </div>
 
-        <!-- Botão Obturador -->
+        <!-- Botão de shutter (tirar foto/ gravar vídeo) -->
         <div class="w-20 h-20 rounded-full border-[3px] border-white flex items-center justify-center p-1">
             <button id="shutter" class="w-full h-full bg-white rounded-full active:scale-90 transition-transform cursor-pointer shadow-inner"></button>
         </div>
 
-        <!-- Inverter Câmera -->
+        <!-- Câmera de selfie (botão para alternar entre câmeras) -->
         <button id="switch-camera" class="w-12 h-12 bg-[#1c1c1c] rounded-full flex items-center justify-center active:bg-gray-700 transition-colors cursor-pointer">
             <i class="ph ph-arrows-clockwise text-2xl text-white"></i>
         </button>
     </div>
 
-    <!-- ================= INÍCIO DA GALERIA INTELIGENTE (OVERLAY) ================= -->
+    <!-- -----------------------------PARTE DA GALERIA AGORA!!!! CUIDADO------------------------------------------------------ -->
     <div id="gallery-view" class="fixed inset-0 bg-[#05030a] z-[100] hidden flex-col font-sans text-white h-[100dvh] w-screen overflow-hidden">
 
         <!-- Área Rolável -->
