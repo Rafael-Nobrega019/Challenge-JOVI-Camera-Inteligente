@@ -79,7 +79,7 @@
                         <i class="ph ph-gear text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
                             <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Ajuste Automático</span>
-                            <span class="text-[10px] text-white/80 leading-tight">Cores e Contraste</span>
+                            <span class="text-[10px] text-white/80 leading-tight">Otimização Geral</span>
                         </div>
                     </div>
                     <div class="check-indicator w-[18px] h-[18px] rounded-full border-[1.5px] border-yellow-400"></div>
@@ -135,7 +135,7 @@
                         <i class="ph ph-circles-four text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
                             <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Desfoque Automático</span>
-                            <span class="text-[10px] text-white/80 leading-tight">Desfocar</span>
+                            <span class="text-[10px] text-white/80 leading-tight">Fundo Suave</span>
                         </div>
                     </div>
                     <div class="check-indicator w-[18px] h-[18px] rounded-full bg-yellow-400 flex items-center justify-center text-white">
@@ -143,13 +143,13 @@
                     </div>
                 </div>
 
-                <!-- Filtros IA -->
+                <!-- Filtros de IA (atualmente só muda a saturação e adiciona um filtro de sepia mesmo) -->
                 <div data-ajuste="filtro"
                     class="ai-menu-item flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-2.5 shadow-lg border border-white/20 cursor-pointer transition-transform active:scale-95">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-funnel text-[22px] text-gray-900 drop-shadow-sm"></i>
                         <div class="flex flex-col">
-                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros IA</span>
+                            <span class="text-[13px] font-bold text-white leading-tight drop-shadow-md">Filtros</span>
                             <span class="text-[10px] text-white/80 leading-tight">Cores Vivas</span>
                         </div>
                     </div>
@@ -270,14 +270,14 @@
                 </div>
             </div>
 
-            <!-- Barra de Busca -->
+            <!-- Barrinha de Busca -->
             <div class="flex items-center bg-[#130722] border border-purple-800/50 rounded-full px-4 py-2.5 mb-6 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
                 <i class="ph ph-magnifying-glass text-gray-400 text-lg mr-3"></i>
                 <input id="input-busca" type="text" placeholder="Buscar fotos com IA..." class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-500">
                 <i class="ph-fill ph-sparkle text-purple-500 text-lg ml-3"></i>
             </div>
 
-            <!-- Filtros Horizontais -->
+            <!-- Filtrar por qualidade :) -->
             <div class="flex overflow-x-auto no-scrollbar gap-3 mb-6 pb-2">
                 <div data-filtro="" class="filtro-qualidade flex flex-col items-center justify-center bg-[#25103f] border border-purple-500/50 rounded-xl min-w-[80px] h-[60px] cursor-pointer">
                     <i class="ph ph-squares-four text-purple-400 text-xl mb-1"></i>
@@ -301,7 +301,7 @@
                 </div>
             </div>
 
-            <!-- Banner Organizador IA -->
+            <!-- Quadradinho arredondado que fala sobre quantas fotos a ia organizou -->
             <div id="banner-organizar-ia" class="flex justify-between items-center bg-[#130722] border border-white/10 rounded-2xl p-4 mb-6 cursor-pointer">
                 <div class="flex flex-col">
                     <span class="text-[11px] font-bold tracking-wider">IA ORGANIZOU 9 FOTOS</span>
@@ -375,7 +375,7 @@
                 </div>
             </div>
 
-            <!-- Banner Fim -->
+            <!-- Fim do banner (o quadrado arredondado) -->
             <div id="banner-alta-qualidade" class="flex flex-col items-center justify-center bg-[#130722] border border-white/10 rounded-2xl p-5 mb-4 text-center cursor-pointer">
                 <span class="text-[11px] font-bold tracking-wider mb-1">FOTOS DE ALTA QUALIDADE</span>
                 <span class="text-[10px] text-gray-400">6 fotos em 4K ou superior</span>
@@ -421,12 +421,12 @@
             </div>
         </div>
 
-        <!-- ================= INÍCIO: VISUALIZADOR DE FOTOS (TELA CHEIA) ================= -->
+        <!-- ================= VISUALIZADOR DE FOTOS (acessado pela galeria) ================= -->
 
-        <!-- Canvas invisível (Escondido) para capturar a foto da câmera -->
+        <!-- Canvas escondido para capturar a foto da câmera :) -->
         <canvas id="photo-canvas" class="hidden"></canvas>
 
-        <!-- Modal de Visualização de Foto -->
+        <!-- Modal de Visualização de Foto :> -->
         <div id="photo-modal" class="fixed inset-0 bg-black z-[200] hidden flex-col justify-center items-center">
 
             <!-- Barra superior do visualizador -->
@@ -437,7 +437,7 @@
                     <i id="btn-ia-foto" class="ph-fill ph-sparkle text-2xl text-white cursor-pointer active:text-gray-400"></i>
                     <i class="ph ph-dots-three-vertical text-3xl text-white cursor-pointer active:text-gray-400"></i>
 
-                    <!-- Painel de IA para a foto aberta -->
+                    <!-- Painel de IA para a foto aberta (no canto superior direito, com icone de estrelinhas) -->
                     <div id="menu-ia-foto" class="hidden absolute top-full mt-2 right-0 w-56 bg-[#130722] border border-white/10 rounded-xl shadow-lg z-20 overflow-hidden">
                         <div class="ia-acao-foto flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-white/10 cursor-pointer" data-acao="resolucao">
                             <i class="ph ph-image text-purple-400"></i> Sugerir Melhor Resolução
@@ -449,7 +449,7 @@
                 </div>
             </div>
 
-            <!-- WRAPPER DA IMAGEM COM O POPUP FLUTUANTE DE REDES SOCIAIS -->
+            <!-- O POPUP FLUTUANTE DE REDES SOCIAIS (o que tem o whatsapp, x e instagram, troquei o facebook pelo x pq achei mais moderno :) ) -->
             <div class="relative flex items-center justify-center w-full my-auto">
                 <img id="modal-image" src="" class="w-full h-auto max-h-[85dvh] object-contain transition-transform duration-300" alt="Foto Ampliada">
                 <video id="modal-video" class="hidden w-full h-auto max-h-[85dvh] object-contain" controls playsinline></video>
@@ -470,17 +470,14 @@
 
             <!-- Barra de Ações Inferior -->
             <div class="absolute bottom-0 w-full pb-8 pt-4 px-8 flex justify-between items-center z-10 bg-gradient-to-t from-black/80 to-transparent">
-                <!-- Ações normais (somem na lixeira) -->
                 <i id="btn-share" class="ph ph-export text-2xl text-white cursor-pointer active:text-gray-400 acao-normal"></i>
                 <i id="btn-favoritar-foto" class="ph ph-heart text-2xl text-white cursor-pointer active:text-gray-400 acao-normal"></i>
                 <i id="btn-excluir-foto" class="ph ph-trash text-2xl text-white cursor-pointer active:text-gray-400 acao-normal"></i>
-                
-                <!-- Ações da lixeira (somem na galeria normal) -->
                 <i id="btn-restaurar-foto" class="hidden ph ph-arrow-counter-clockwise text-2xl text-white cursor-pointer active:text-gray-400 acao-lixeira"></i>
-                <i id="btn-excluir-permanente" class="hidden ph ph-trash-fill text-2xl text-red-500 cursor-pointer active:text-red-400 acao-lixeira"></i>
+                <i id="btn-excluir-permanente" class="hidden ph-fill ph-trash text-2xl text-red-500 cursor-pointer active:text-red-400 acao-lixeira"></i>
             </div>
         </div>
-<!-- ================= MODAL DE COMPARTILHAMENTO ================= -->
+<!-- ================= Botão de Compartilhamento ================= -->
     <div id="share-modal" class="fixed inset-0 bg-black/80 z-[250] hidden items-end sm:items-center justify-center backdrop-blur-sm transition-all">
         <div class="bg-[#130722] border border-white/10 w-full sm:w-96 rounded-t-2xl sm:rounded-2xl p-6 text-white shadow-2xl">
             <div class="flex justify-between items-center mb-4">
@@ -490,7 +487,7 @@
                 </button>
             </div>
             
-            <!-- Opções de Redes Sociais -->
+            <!-- Opções de Redes Sociais do botão (coloquei a opção de copiar imagens tbm) -->
             <div class="grid grid-cols-4 gap-4 py-4 text-center">
                 <button onclick="compartilharRede('whatsapp')" class="flex flex-col items-center gap-1 group cursor-pointer active:scale-95 transition-transform">
                     <div class="w-12 h-12 rounded-full bg-green-600 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">
@@ -521,9 +518,7 @@
                 </button>
             </div>
         </div>
-    <!-- ================= FIM DA GALERIA INTELIGENTE ================= -->
 
-    
     <script src="./js/script.js"></script>
 </body>
 

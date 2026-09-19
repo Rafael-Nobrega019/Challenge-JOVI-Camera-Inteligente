@@ -1,6 +1,4 @@
-// ==========================================
-// 1. CÂMERA E CONTROLES BÁSICOS
-// ==========================================
+// O script da câmera inicia aqui ó
 const video = document.getElementById('camera-feed');
 let stream = null;
 let currentFacingMode = 'environment';
@@ -31,9 +29,7 @@ document.getElementById('switch-camera').addEventListener('click', () => {
 });
 startCamera();
 
-// ==========================================
-// 1.1 CONTROLE DE FLASH
-// ==========================================
+//  O BOTÃO DE FLASH FUNCIONAL :D
 const btnFlash = document.getElementById('btn-flash');
 const flashIcon = document.getElementById('flash-icon');
 const flashAutoBadge = document.getElementById('flash-auto-badge');
@@ -63,9 +59,7 @@ btnFlash.addEventListener('click', () => {
     }
 });
 
-// ==========================================
-// 2. MENU DE INTELIGÊNCIA ARTIFICIAL
-// ==========================================
+// Menu de IA
 const aiMenu = document.getElementById('ai-menu');
 document.getElementById('btn-ai').addEventListener('click', () => {
     aiMenu.classList.toggle('hidden');
@@ -110,9 +104,7 @@ document.querySelectorAll('.ai-menu-item').forEach(item => {
     });
 });
 
-// ==========================================
-// 3. GALERIA INTELIGENTE & VISUALIZADOR
-// ==========================================
+// A Galeria inteligente
 const galleryView = document.getElementById('gallery-view');
 document.getElementById('btn-open-gallery').addEventListener('click', () => { 
     galleryView.classList.remove('hidden'); 
@@ -131,7 +123,7 @@ const modalImage = document.getElementById('modal-image');
 const btnFavoritarFoto = document.getElementById('btn-favoritar-foto');
 
 let fotoAtualElemento = null;
-let lixeiraAtiva = false; // Controla se estamos na aba da lixeira
+let lixeiraAtiva = false;
 
 const modalVideo = document.getElementById('modal-video');
 
@@ -143,7 +135,7 @@ function abrirFotoEmTelaCheia(src, elemento, tipoArquivo = 'foto') {
         modalImage.classList.add('hidden');
         modalVideo.classList.remove('hidden');
         modalVideo.src = src;
-        modalVideo.play(); // Da play automático
+        modalVideo.play();
     } else {
         modalVideo.classList.add('hidden');
         modalImage.classList.remove('hidden');
@@ -151,13 +143,10 @@ function abrirFotoEmTelaCheia(src, elemento, tipoArquivo = 'foto') {
         modalVideo.pause(); 
     }
     
-    // ... restante da função igual (Verifica lixeira, mostra botões, etc)
+    // Agora a lixeira funciona
     const naLixeira = fotoAtualElemento && fotoAtualElemento.dataset.status === 'lixeira';
-    
     document.querySelectorAll('.acao-normal').forEach(el => el.classList.toggle('hidden', naLixeira));
     document.querySelectorAll('.acao-lixeira').forEach(el => el.classList.toggle('hidden', !naLixeira));
-    
-    // ... (o resto pode manter igualzinho o que já estava aí)
     
     photoModal.classList.replace('hidden', 'flex');
 }
@@ -175,7 +164,7 @@ btnFavoritarFoto.addEventListener('click', () => {
     }
 });
 
-// MANDAR PARA A LIXEIRA (Botão de lixo normal)
+// Mandando pra lixeira (Botão de lixo normal)
 document.getElementById('btn-excluir-foto').addEventListener('click', () => {
     if (fotoAtualElemento) {
         fotoAtualElemento.dataset.status = 'lixeira'; // Marca a foto como "na lixeira"
@@ -185,7 +174,7 @@ document.getElementById('btn-excluir-foto').addEventListener('click', () => {
     document.getElementById('btn-close-modal').click();
 });
 
-// RESTAURAR DA LIXEIRA
+// restaurando da lixeira agora (no caso o botão de restaurar)
 document.getElementById('btn-restaurar-foto').addEventListener('click', () => {
     if (fotoAtualElemento) {
         delete fotoAtualElemento.dataset.status; // Tira a marcação de lixeira
@@ -240,9 +229,7 @@ document.querySelectorAll('#gallery-grid > div').forEach(item => {
     });
 });
 
-// ==========================================
-// 4. TIRAR FOTO E AUTOTIMER
-// ==========================================
+// Função de tirar foto e do timer junto
 function tirarFoto() {
     // Efeito de Flash (piscar branco)
     if (modoFlash !== 'off') {
@@ -256,12 +243,12 @@ function tirarFoto() {
         }, 100);
     }
 
-    // 1. Pegar resolução real da lente da câmera
+    // pegando a resolução real
     const natWidth = video.videoWidth || 1080;
     const natHeight = video.videoHeight || 1920;
     const nativeAspect = natWidth / natHeight;
 
-    // 2. Descobrir a matemática da proporção escolhida (ex: 4:5 vira 4/5 = 0.8)
+    // Agora ajustando a proporção pela escolhida
     const [wRatio, hRatio] = ASPECTOS[indiceAspecto].split(':').map(Number);
     const targetAspect = wRatio / hRatio;
 
@@ -270,13 +257,11 @@ function tirarFoto() {
     let startX = 0;
     let startY = 0;
 
-    // 3. Fazer o Crop (Corte espacial)
+    // Fazendo o corte na foto
     if (nativeAspect > targetAspect) {
-        // Câmera é mais larga que o alvo: corta as laterais
         drawWidth = natHeight * targetAspect;
         startX = (natWidth - drawWidth) / 2;
     } else if (nativeAspect < targetAspect) {
-        // Câmera é mais alta que o alvo: corta em cima e embaixo
         drawHeight = natWidth / targetAspect;
         startY = (natHeight - drawHeight) / 2;
     }
@@ -285,7 +270,6 @@ function tirarFoto() {
     canvas.width = drawWidth;
     canvas.height = drawHeight;
     
-    // Desenhar só a parte que interessa no canvas
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, startX, startY, drawWidth, drawHeight, 0, 0, drawWidth, drawHeight);
     
@@ -329,14 +313,12 @@ let recordedChunks = [];
 let isRecording = false;
 
 document.getElementById('shutter').addEventListener('click', () => {
-    // SE ESTIVER NO MODO VÍDEO
+
     if (modoAtualCamera === 'Video') {
         const shutterBtn = document.getElementById('shutter');
         
         if (!isRecording) {
-            // Começa a gravar
             recordedChunks = [];
-            // Tenta usar MP4/WebM se o celular suportar
             try { mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' }); } 
             catch(e) { mediaRecorder = new MediaRecorder(stream); }
 
@@ -362,22 +344,22 @@ document.getElementById('shutter').addEventListener('click', () => {
             mediaRecorder.start();
             isRecording = true;
             
-            // Tira o branco e coloca o vermelho piscando (sem encolher)
+            // botão de gravação ficando vermelho quando clica nele, invés de ficar padrão branco como o de tirar foto
             shutterBtn.classList.remove('bg-white');
             shutterBtn.classList.add('bg-red-600', 'animate-pulse');
         } else {
-            // Para de gravar
+
             mediaRecorder.stop();
             isRecording = false;
             
-            // Tira o vermelho piscando e devolve o branco normal
+            // agora volta ao normal quando para de gravar
             shutterBtn.classList.remove('bg-red-600', 'animate-pulse');
             shutterBtn.classList.add('bg-white');
         }
         return; 
     }
 
-    // SE ESTIVER NO MODO FOTO (Lógica do Timer)
+    // SE ESTIVER NO MODO FOTO
     let restante = TEMPOS_TIMER[indiceTimer];
     if (!restante) { tirarFoto(); return; }
 
@@ -396,9 +378,7 @@ document.getElementById('shutter').addEventListener('click', () => {
     }, 1000);
 });
 
-// ==========================================
-// 5. PROPORÇÃO, MODOS E FILTROS DA GALERIA
-// ==========================================
+// Aspectos da câmera funcionando :) 
 const ASPECTOS = ['4:5', '1:1', '16:9'];
 const btnAspecto = document.getElementById('btn-aspecto');
 let indiceAspecto = 0;
@@ -419,7 +399,7 @@ btnAspecto.addEventListener('click', () => {
     }
 });
 
-let modoAtualCamera = 'Foto'; // Variável para sabermos o que o botão central deve fazer
+let modoAtualCamera = 'Foto';
 
 const CLASSES_MODO = ['bg-gray-800/80', 'text-pink-600', 'rounded-full', 'px-5', 'py-1.5', 'font-semibold'];
 document.querySelectorAll('.modo-camera').forEach(modo => {
@@ -431,12 +411,11 @@ document.querySelectorAll('.modo-camera').forEach(modo => {
         modo.classList.remove('text-gray-400');
         modo.classList.add(...CLASSES_MODO);
         
-        // Salva o modo que o usuário escolheu
         modoAtualCamera = modo.textContent.trim();
     });
 });
 
-// Navegação Galeria
+// Navegação na galeria
 const menuLateral = document.getElementById('menu-lateral');
 document.getElementById('menu-toggle').addEventListener('click', () => {
     menuLateral.classList.toggle('hidden');
@@ -452,7 +431,7 @@ document.querySelectorAll('#menu-lateral .menu-item').forEach(item => {
     });
 });
 
-// Ordenação IA
+// Ordenação por IA
 const ORDEM = { '8K': 4, '4K': 3, '2K': 2, 'FHD': 1 };
 
 function organizarPorQualidade() {
@@ -508,15 +487,12 @@ document.querySelectorAll('#menu-ia-galeria .ia-acao').forEach(item => {
     });
 });
 
-// ==========================================
-// 6. FILTROS QUALIDADE, LIXEIRA E FAVORITOS
-// ==========================================
+// Filtrando por favoritos, qualidade e lixeira :D
 function filtrarPorQualidade(qualidades) {
-    lixeiraAtiva = false; // Sai do modo lixeira
+    lixeiraAtiva = false;
     document.getElementById('titulo-galeria').innerHTML = `Galeria <span class="text-purple-500">Inteligente</span>`;
     
     document.querySelectorAll('#gallery-grid > div').forEach(item => {
-        // Se a foto tá na lixeira, esconde ela da galeria normal não importa o filtro
         if (item.dataset.status === 'lixeira') {
             item.style.display = 'none';
             return;
@@ -533,7 +509,7 @@ function filtrarPorQualidade(qualidades) {
     });
 }
 
-// Botões redondinhos de Filtro lá no topo (Todos, FHD, 2k, 4k, 8k)
+// Botões redondinhos de Filtro lá no topo da galeria (Todos, FHD, 2k, 4k, 8k)
 document.querySelectorAll('.filtro-qualidade').forEach(pill => {
     pill.addEventListener('click', () => {
         document.querySelectorAll('.filtro-qualidade').forEach(p => { 
@@ -552,33 +528,27 @@ document.querySelectorAll('.filtro-qualidade').forEach(pill => {
     });
 });
 
-// Voltar pros Álbuns normais
 document.getElementById('nav-albuns').addEventListener('click', () => {
     filtrarPorQualidade(null);
 });
 
-// Banner de Alta Qualidade
 document.getElementById('banner-alta-qualidade').addEventListener('click', () => {
     filtrarPorQualidade(['4K', '8K']);
 });
 
-// Campo de Buscar
 document.getElementById('nav-buscar').addEventListener('click', () => {
     document.getElementById('input-busca').focus();
 });
 
-
-// === LÓGICA DA ABA LIXEIRA ===
 document.getElementById('menu-item-lixeira').addEventListener('click', () => {
     menuLateral.classList.add('hidden');
     lixeiraAtiva = true;
-    favAtivo = false; // Desliga filtro de favoritos se estiver ligado
+    favAtivo = false;
     document.getElementById('nav-favoritos').classList.remove('text-pink-500');
     
-    // Muda o título
+    // Muda o título para lixeira excluídos, quando acessa a lixeira C:
     document.getElementById('titulo-galeria').innerHTML = `Lixeira <span class="text-red-500">Excluídos</span>`;
     
-    // Filtra o Grid pra mostrar SÓ a lixeira
     document.querySelectorAll('#gallery-grid > div').forEach(item => {
         if (item.dataset.status === 'lixeira') {
             item.style.display = '';
@@ -587,15 +557,13 @@ document.getElementById('menu-item-lixeira').addEventListener('click', () => {
         }
     });
 });
-// =============================
-
 
 // Favoritos
 let favAtivo = false;
 const navFav = document.getElementById('nav-favoritos');
 
 navFav.addEventListener('click', () => {
-    lixeiraAtiva = false; // Sai do modo lixeira
+    lixeiraAtiva = false;
     document.getElementById('titulo-galeria').innerHTML = `Galeria <span class="text-purple-500">Inteligente</span>`;
     
     favAtivo = !favAtivo;
@@ -607,7 +575,6 @@ navFav.addEventListener('click', () => {
     }
     
     document.querySelectorAll('#gallery-grid > div').forEach(item => {
-        // Proteção: não mostra fotos da lixeira nos favoritos
         if (item.dataset.status === 'lixeira') {
             item.style.display = 'none';
             return;
@@ -619,14 +586,11 @@ navFav.addEventListener('click', () => {
             item.style.display = 'none';
         }
     });
-});// ==========================================
-// COMPARTILHAMENTO DE FOTO
-// ==========================================
+});
+
 const shareModal = document.getElementById('share-modal');
 const btnCloseShare = document.getElementById('btn-close-share');
 
-// Supondo que o seu botão de compartilhar na tela de visualização tenha um ID como 'btn-share'
-// (Caso seu botão tenha outra classe ou ID, ajuste o seletor abaixo)
 const btnShare = document.getElementById('btn-share'); 
 
 if (btnShare) {
@@ -639,14 +603,12 @@ btnCloseShare.addEventListener('click', () => {
     shareModal.classList.replace('flex', 'hidden');
 });
 
-// Fechar ao clicar fora do conteúdo do modal
 shareModal.addEventListener('click', (e) => {
     if (e.target === shareModal) {
         shareModal.classList.replace('flex', 'hidden');
     }
 });
 
-// Função para simular ou executar a ação de compartilhamento
 function compartilharRede(tipo) {
     const imagemAtualSrc = modalImage.src;
 
