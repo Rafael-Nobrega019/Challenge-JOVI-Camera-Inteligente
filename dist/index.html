@@ -473,8 +473,15 @@
                 <i id="btn-share" class="ph ph-export text-2xl text-white cursor-pointer active:text-gray-400 acao-normal"></i>
                 <i id="btn-favoritar-foto" class="ph ph-heart text-2xl text-white cursor-pointer active:text-gray-400 acao-normal"></i>
                 <i id="btn-excluir-foto" class="ph ph-trash text-2xl text-white cursor-pointer active:text-gray-400 acao-normal"></i>
-                <i id="btn-restaurar-foto" class="hidden ph ph-arrow-counter-clockwise text-2xl text-white cursor-pointer active:text-gray-400 acao-lixeira"></i>
-                <i id="btn-excluir-permanente" class="hidden ph-fill ph-trash text-2xl text-red-500 cursor-pointer active:text-red-400 acao-lixeira"></i>
+                <!-- essas divs aqui vão ser apenas para a lixeira, onde coloca um textinho embaixo do icone pra deixar a parte da imagem na lixeira mais intuítiva :) -->
+                <div id="btn-restaurar-foto" class="hidden flex-col items-center gap-1 cursor-pointer active:scale-95 transition-transform acao-lixeira">
+                    <i class="ph ph-arrow-counter-clockwise text-2xl text-white"></i>
+                    <span class="text-[10px] text-white font-medium tracking-wide">Restaurar</span>
+                </div>
+                <div id="btn-excluir-permanente" class="hidden flex-col items-center gap-1 cursor-pointer active:scale-95 transition-transform acao-lixeira">
+                    <i class="ph-fill ph-trash text-2xl text-red-500"></i>
+                    <span class="text-[10px] text-red-500 font-medium tracking-wide">Excluir</span>
+                </div>
             </div>
         </div>
 <!-- ================= Botão de Compartilhamento ================= -->
